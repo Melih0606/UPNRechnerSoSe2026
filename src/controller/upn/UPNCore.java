@@ -1,6 +1,6 @@
 package controller.upn;
 
-import common.exception.UserException;
+import common.exception.GeneralUserException;
 import controller.upn.operator.Operator;
 import model.Stack;
 
@@ -33,7 +33,9 @@ public interface UPNCore
     * <p>
     * Die Methode setzt den Rechner in den Eingabemodus, falls er sich nicht
     * bereits darin befindet. Anschliessend wird die angegebene Ziffer an die
-    * Eingabezeile angehaengt.
+    * Eingabezeile angehaengt, sofern dadurch weiterhin ein in einen
+    * {@code double} konvertierbarer Text entsteht. Ein eventuell vorher
+    * angezeigter Fehler wird durch diesen neuen Tastendruck beendet.
     * </p>
     *
     * @param digit
@@ -41,75 +43,134 @@ public interface UPNCore
     *            bis {@code 9}
     * @throws IllegalArgumentException
     *             wenn {@code digit} kleiner als {@code 0} oder groesser als
-    *             {@code 9} ist
+    *             {@code 9} ist; dies ist ein Programmierfehler der Oberflaeche
     */
    void inputDigit(int digit);
 
    /**
     * Verarbeitet den Druck auf die Dezimalpunkttaste.
+    *
+    * <p>
+    * Die Methode setzt den Rechner in den Eingabemodus und ergaenzt die
+    * Eingabezeile um einen Dezimalpunkt. Die Eingabezeile darf zu keinem
+    * Zeitpunkt ungueltig werden. Ist bereits ein Dezimalpunkt vorhanden, bleibt
+    * die Eingabezeile unveraendert. Ein eventuell vorher angezeigter Fehler
+    * wird durch diesen neuen Tastendruck beendet.
+    * </p>
     */
    void inputDecimalPoint();
 
    /**
     * Wechselt das Vorzeichen des aktuellen Wertes.
     *
-    * @throws UserException
-    *             wenn der Vorzeichenwechsel nicht erfolgreich ausgefuehrt
-    *             werden kann
+    * <p>
+    * Im Eingabemodus wird am Anfang der Eingabezeile ein Minuszeichen
+    * eingefuegt oder entfernt. Im Funktionsmodus wird das Vorzeichen des
+    * X-Registers gewechselt. Dabei wird der bisherige X-Wert im LastX-Register
+    * gesichert. Ein eventuell vorher angezeigter Fehler wird durch diesen neuen
+    * Tastendruck beendet.
+    * </p>
+    *
+    * @throws GeneralUserException
+    *             wenn der Vorzeichenwechsel im Funktionsmodus nicht moeglich
+    *             ist, zum Beispiel weil kein X-Register vorhanden ist oder das
+    *             Ergebnis nicht endlich ist
     */
-   void changeSign() throws UserException;
+   void changeSign() throws GeneralUserException;
 
    /**
     * Verarbeitet den Druck auf die Enter-Taste.
     *
-    * @throws UserException
-    *             wenn die Eingabe nicht erfolgreich uebernommen werden kann
+    * <p>
+    * Im Eingabemodus wird die aktuelle Eingabezeile in einen {@code double}
+    * konvertiert, auf den Stack gelegt und die Eingabezeile geleert. Im
+    * Funktionsmodus wird der Inhalt des X-Registers kopiert und erneut auf den
+    * Stack gelegt. Ist der Stack leer, wird der angezeigte Wert {@code 0.0} auf
+    * den Stack gelegt. Nach erfolgreicher Ausfuehrung befindet sich der Rechner
+    * im Funktionsmodus.
+    * </p>
+    *
+    * @throws GeneralUserException
+    *             wenn die Eingabezeile nicht in einen {@code double}
+    *             konvertiert werden kann oder das Kopieren des X-Registers
+    *             fehlschlaegt
     */
-   void enter() throws UserException;
+   void enter() throws GeneralUserException;
 
    /**
-    * Loescht den gesamten Rechnerzustand.
+    * Loescht den gesamten Stack und setzt das LastX-Register auf den
+    * Anfangswert zurueck.
+    *
+    * <p>
+    * Vor dem Loeschen wird der Rechner in den Funktionsmodus gesetzt. Eine
+    * vorhandene Eingabezeile wird dabei verworfen. Nach der Methode ist der
+    * Stack leer, LastX hat den Wert {@code 0.0}, und die Anzeige zeigt
+    * {@code "0.0"}.
+    * </p>
     */
    void clear();
 
    /**
-    * Loescht das X-Register.
+    * Loescht das X-Register des Stacks.
     *
-    * @throws UserException
-    *             wenn die Funktion nicht erfolgreich ausgefuehrt werden kann
+    * <p>
+    * Der Rechner wird zuerst in den Funktionsmodus gesetzt. Gibt es ein
+    * X-Register, wird dieses entfernt. Ist der Stack leer, bleibt er leer. Das
+    * LastX-Register wird durch diese Stackmanipulation nicht veraendert.
+    * </p>
+    *
+    * @throws GeneralUserException
+    *             wenn eine vorhandene Eingabezeile nicht auf den Stack
+    *             uebernommen werden kann
     */
-   void clearX() throws UserException;
+   void clearX() throws GeneralUserException;
 
    /**
     * Schiebt den Inhalt des LastX-Registers auf den Stack.
     *
-    * @throws UserException
-    *             wenn die Funktion nicht erfolgreich ausgefuehrt werden kann
-    */
-   void pushLastX() throws UserException;
-
-   /**
-    * Vertauscht X und Y.
+    * <p>
+    * Der Rechner wird zuerst in den Funktionsmodus gesetzt. Danach wird der
+    * aktuelle Wert des LastX-Registers auf den Stack gelegt und dadurch zum
+    * neuen X-Register. Der Anfangswert von LastX ist {@code 0.0}.
+    * </p>
     *
-    * @throws UserException
-    *             wenn die Funktion nicht erfolgreich ausgefuehrt werden kann
+    * @throws GeneralUserException
+    *             wenn eine vorhandene Eingabezeile nicht auf den Stack
+    *             uebernommen werden kann
     */
-   void swapXY() throws UserException;
+   void pushLastX() throws GeneralUserException;
 
    /**
-    * Fuehrt eine mathematische Operation aus.
+    * Vertauscht die beiden untersten Elemente des Stacks.
+    *
+    * <p>
+    * Der Rechner wird zuerst in den Funktionsmodus gesetzt. Anschliessend
+    * werden X-Register und Y-Register vertauscht. Sind weniger als zwei Werte
+    * auf dem Stack vorhanden, bleibt der Stack unveraendert. Das
+    * LastX-Register wird durch diese Stackmanipulation nicht veraendert.
+    * </p>
+    *
+    * @throws GeneralUserException
+    *             wenn eine vorhandene Eingabezeile nicht auf den Stack
+    *             uebernommen werden kann
+    */
+   void swapXY() throws GeneralUserException;
+
+   /**
+    * Fuehrt eine mathematische Operation auf dem Stack aus.
     *
     * @param operator
-    *            auszufuehrender Operator; darf nicht {@code null} sein
+    *            die auszufuehrende mathematische Operation; darf nicht
+    *            {@code null} sein
     * @throws IllegalArgumentException
     *             wenn {@code operator} {@code null} ist
-    * @throws UserException
+    * @throws GeneralUserException
     *             wenn die Operation nicht erfolgreich ausgefuehrt werden kann
     */
-   void applyOperator(Operator operator) throws UserException;
+   void applyOperator(Operator operator) throws GeneralUserException;
 
    /**
-    * Liefert den aktuell anzuzeigenden Displaytext.
+    * Liefert den Text, der im Display angezeigt werden soll.
     *
     * @return aktuell anzuzeigender Displaytext; niemals {@code null}
     */
@@ -139,7 +200,8 @@ public interface UPNCore
    /**
     * Gibt an, ob der Rechner gerade im Eingabemodus ist.
     *
-    * @return {@code true}, wenn Eingabemodus aktiv ist, sonst {@code false}
+    * @return {@code true}, wenn eine Zahl als Eingabezeile aufgebaut wird,
+    *         sonst {@code false}
     */
    boolean isInputMode();
 

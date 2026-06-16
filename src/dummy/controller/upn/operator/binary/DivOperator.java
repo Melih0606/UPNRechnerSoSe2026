@@ -1,6 +1,6 @@
 package dummy.controller.upn.operator.binary;
 
-import common.exception.UserException;
+import common.exception.GeneralUserException;
 import controller.upn.operator.Operator;
 import model.Stack;
 
@@ -12,7 +12,7 @@ import model.Stack;
 public class DivOperator implements Operator
 {
    @Override
-   public void calculate(Stack<Double> stack) throws UserException
+   public void calculate(Stack<Double> stack) throws GeneralUserException
    {
       if (stack == null)
       {
@@ -22,7 +22,7 @@ public class DivOperator implements Operator
 
       if (stack.size() < 2)
       {
-         throw new UserException("Zu wenige Operanden.");
+         throw new GeneralUserException("Zu wenige Operanden.");
       }
 
       double x = stack.pop();
@@ -30,14 +30,15 @@ public class DivOperator implements Operator
 
       if (x == 0.0)
       {
-         throw new UserException("Division durch 0 ist nicht erlaubt.");
+         throw new GeneralUserException(
+               "Division durch 0 ist nicht erlaubt.");
       }
 
       double result = y / x;
 
       if (Double.isNaN(result) || Double.isInfinite(result))
       {
-         throw new UserException("Ungueltiges Ergebnis.");
+         throw new GeneralUserException("Ungueltiges Ergebnis.");
       }
 
       stack.push(result);

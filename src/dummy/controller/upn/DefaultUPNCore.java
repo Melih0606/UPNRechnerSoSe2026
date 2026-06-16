@@ -1,6 +1,6 @@
 package dummy.controller.upn;
 
-import common.exception.UserException;
+import common.exception.GeneralUserException;
 import controller.upn.UPNCore;
 import controller.upn.operator.Operator;
 import model.Stack;
@@ -50,6 +50,44 @@ public class DefaultUPNCore implements UPNCore
       error = false;
    }
 
+   /**
+    * Setzt den Rechner in den Funktionsmodus.
+    *
+    * <p>
+    * Falls eine Eingabezeile vorhanden ist, wird sie in einen Double-Wert
+    * konvertiert und auf den Stack geschoben. Anschließend wird die
+    * Eingabezeile gelöscht.
+    * </p>
+    *
+    * @throws GeneralUserException
+    *            falls die Eingabezeile nicht in einen gültigen Double-Wert
+    *            konvertiert werden kann
+    */
+   private void setFunctionMode() throws GeneralUserException
+   {
+      if (inputString != null)
+      {
+         try
+         {
+            double value = Double.parseDouble(inputString);
+
+            if (Double.isNaN(value) || Double.isInfinite(value))
+            {
+               throw new GeneralUserException("Ungueltiger Eingabewert.");
+            }
+
+            stack.push(value);
+            inputString = null;
+         }
+         catch (NumberFormatException e)
+         {
+            throw new GeneralUserException("Ungueltiger Eingabewert.");
+         }
+      }
+
+      inputMode = false;
+   }
+
    @Override
    public void inputDigit(int digit)
    {
@@ -90,6 +128,10 @@ public class DefaultUPNCore implements UPNCore
       {
          inputString = "0";
       }
+      else if ("-".equals(inputString))
+      {
+         inputString = "-0";
+      }
 
       if (!inputString.contains("."))
       {
@@ -98,7 +140,7 @@ public class DefaultUPNCore implements UPNCore
    }
 
    @Override
-   public void changeSign() throws UserException
+   public void changeSign() throws GeneralUserException
    {
       clearErrorState();
 
@@ -106,7 +148,7 @@ public class DefaultUPNCore implements UPNCore
       {
          if (inputString == null || inputString.isEmpty())
          {
-            inputString = "-";
+            inputString = "-0";
          }
          else if (inputString.startsWith("-"))
          {
@@ -126,24 +168,13 @@ public class DefaultUPNCore implements UPNCore
    }
 
    @Override
-   public void enter() throws UserException
+   public void enter() throws GeneralUserException
    {
       clearErrorState();
 
       if (inputMode)
       {
-         if (inputString == null || inputString.isEmpty()
-               || "-".equals(inputString))
-         {
-            stack.push(0.0);
-         }
-         else
-         {
-            stack.push(Double.parseDouble(inputString));
-         }
-
-         inputString = null;
-         inputMode = false;
+         setFunctionMode();
       }
       else
       {
@@ -169,11 +200,10 @@ public class DefaultUPNCore implements UPNCore
    }
 
    @Override
-   public void clearX() throws UserException
+   public void clearX() throws GeneralUserException
    {
       clearErrorState();
-      inputString = null;
-      inputMode = false;
+      setFunctionMode();
 
       if (!stack.isEmpty())
       {
@@ -182,50 +212,55 @@ public class DefaultUPNCore implements UPNCore
    }
 
    @Override
-   public void pushLastX() throws UserException
+   public void pushLastX() throws GeneralUserException
    {
       clearErrorState();
-      inputString = null;
-      inputMode = false;
+      setFunctionMode();
       stack.push(lastX);
    }
 
    @Override
-   public void swapXY() throws UserException
+   public void swapXY() throws GeneralUserException
    {
       clearErrorState();
-      inputString = null;
-      inputMode = false;
+      setFunctionMode();
       stack.swapXY();
    }
 
    @Override
-   public void applyOperator(Operator operator) throws UserException
+   public void applyOperator(Operator operator) throws GeneralUserException
    {
-      clearErrorState();
-
       if (operator == null)
       {
          throw new IllegalArgumentException(
                "Der Operator darf nicht null sein.");
       }
 
-      if (inputMode)
-      {
-         enter();
-      }
+      clearErrorState();
 
-      if (!stack.isEmpty())
-      {
-         lastX = stack.getX();
-      }
+      Stack<Double> oldStack = stack.clone();
+      double oldLastX = lastX;
+      String oldInputString = inputString;
+      boolean oldInputMode = inputMode;
 
       try
       {
+         setFunctionMode();
+
+         if (!stack.isEmpty())
+         {
+            lastX = stack.getX();
+         }
+
          operator.calculate(stack);
       }
-      catch (UserException e)
+      catch (GeneralUserException e)
       {
+         stack.clear();
+         stack.addAll(oldStack);
+         lastX = oldLastX;
+         inputString = oldInputString;
+         inputMode = oldInputMode;
          error = true;
          throw e;
       }
