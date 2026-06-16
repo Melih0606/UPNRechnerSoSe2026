@@ -1,6 +1,6 @@
 package controller.upn.operator;
 
-import common.exception.GeneralUserException;
+import common.exception.UserException;
 import model.Stack;
 
 /**
@@ -35,9 +35,9 @@ public interface Operator {
      * @param stack
      *            Stack, auf dem die Operation ausgefuehrt wird; darf nicht
      *            {@code null} sein
-     * @throws GeneralUserException
+     * @throws UserException
      *             wenn die Operation wegen fehlender oder ungueltiger Operanden
      *             nicht ausgefuehrt werden kann
      */
-    void calculate(Stack<Double> stack) throws GeneralUserException;
+   void calculate(Stack<Double> stack) throws UserException;
 }

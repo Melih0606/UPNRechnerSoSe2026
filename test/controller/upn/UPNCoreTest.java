@@ -1,87 +1,161 @@
 package controller.upn;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
-import common.exception.IllegalUserInputException;
 import common.exception.UserException;
 import controller.upn.operator.Operator;
+import dummy.controller.upn.DefaultUPNCore;
 import dummy.controller.upn.operator.binary.DivOperator;
 import model.Stack;
 
 /**
- * JUnit 5 Testklasse zum Testen der {@link UPNCore} Implementierung
- * {@link DefaultUPNCore}.
+ * JUnit-5-Testklasse zum Testen des UPN-Rechenkerns.
  *
- * @author M. Faulstich
+ * <p>
+ * In diesem ersten Stand werden der Startzustand sowie erste Eingaben und die
+ * Division geprueft.
+ * </p>
  *
+ * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */
 class UPNCoreTest
 {
-
-   private UPNCore upn = null; // Sobald diese Klasse implementiert ist: new DefaultUPNCore();
-
-   /*
-    * Beispiel für den Test des der Division
+   /**
+    * Zu testender Rechnerkern.
     */
-   // Ob diese Test reichen, entscheiden Sie....
+   private UPNCore upn = null;
 
    /**
-    * Test Division.
+    * Erzeugt vor jedem Test einen neuen Dummy-Rechenkern.
+    */
+   @BeforeEach
+   void setUp()
+   {
+      upn = new DefaultUPNCore();
+   }
+
+   /**
+    * Tests des Startzustands.
+    */
+   @Nested
+   @DisplayName("Startzustand")
+   class InitialStateTest
+   {
+      /**
+       * Testet die Anzeige beim Start.
+       */
+      @Test
+      @DisplayName("Display zeigt 0.0")
+      void testDisplayText()
+      {
+         assertEquals("0.0", upn.getDisplayText());
+      }
+
+      /**
+       * Testet den Startmodus.
+       */
+      @Test
+      @DisplayName("Start im Funktionsmodus")
+      void testInputMode()
+      {
+         assertFalse(upn.isInputMode());
+      }
+
+      /**
+       * Testet den Fehlerzustand beim Start.
+       */
+      @Test
+      @DisplayName("Kein Fehlerzustand")
+      void testError()
+      {
+         assertFalse(upn.hasError());
+      }
+   }
+
+   /**
+    * Tests der Zifferneingabe.
+    */
+   @Nested
+   @DisplayName("Zifferneingabe")
+   class InputDigitTest
+   {
+      /**
+       * Testet die Eingabe der Ziffer 6.
+       */
+      @Test
+      @DisplayName("Eingabe 6")
+      void testDigitSix()
+      {
+         upn.inputDigit(6);
+
+         assertTrue(upn.isInputMode());
+         assertEquals("6", upn.getInputString());
+         assertEquals("6", upn.getDisplayText());
+      }
+   }
+
+   /**
+    * Beispieltest Division.
     */
    @Nested
    @DisplayName("/")
    class DivTest
    {
-      Operator operator = new DivOperator();
+      /**
+       * Dummy-Divisionsoperator.
+       */
+      private final Operator operator = new DivOperator();
 
+      /**
+       * Testet 6 / 2 = 3.
+       *
+       * @throws UserException
+       *            falls der Test unerwartet fehlschlaegt
+       */
       @Test
       @DisplayName("6 / 2 = 3")
       void testOk() throws UserException
       {
-         upn.clr();
-         upn.keyIn("6");
+         upn.clear();
+         upn.inputDigit(6);
          upn.enter();
-         upn.keyIn("2");
-         upn.execute(operator);
+         upn.inputDigit(2);
+         upn.applyOperator(operator);
 
          Stack<Double> stack = upn.getStack();
          assertTrue(stack.size() > 0);
-
-         assertEquals(3.0, stack.peek(stack.size() - 1));
-         // LastX korrekt?
-         upn.lastX();
-         assertEquals(2.0, stack.peek(stack.size() - 1));
+         assertEquals(3.0, stack.getX());
+         assertEquals(2.0, upn.getLastX());
       }
 
       /**
-       * Test Division durch 0.
+       * Testet Division durch 0.
        */
       @Test
       @DisplayName("6 / 0")
       void testDiv0()
       {
-         assertThrows(IllegalUserInputException.class, new Executable()
+         assertThrows(UserException.class, new Executable()
          {
-
             @Override
             public void execute() throws Throwable
             {
-               upn.clr();
-               upn.keyIn("6");
+               upn.clear();
+               upn.inputDigit(6);
                upn.enter();
-               upn.keyIn("0");
-               upn.execute(operator);
+               upn.inputDigit(0);
+               upn.applyOperator(operator);
             }
          });
       }
-
    }
-
 }
