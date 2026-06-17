@@ -276,6 +276,37 @@ class UPNCoreTest
    }
 
    /**
+    * Tests des Vorzeichenwechsels im Funktionsmodus.
+    */
+   @Nested
+   @DisplayName("+/- im Funktionsmodus")
+   class ChangeSignFunctionModeTest
+   {
+      /**
+       * Testet den Vorzeichenwechsel des X-Registers.
+       *
+       * @throws GeneralUserException
+       *             falls unerwartet ein Fehler auftritt
+       */
+      @Test
+      @DisplayName("6 wird im Funktionsmodus zu -6.0")
+      void testChangeSignFunctionMode() throws GeneralUserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.changeSign();
+
+         assertFalse(upn.isInputMode());
+         assertEquals("-6.0", upn.getDisplayText());
+         assertEquals(6.0, upn.getLastX());
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(1, stack.size());
+         assertEquals(-6.0, stack.getX());
+      }
+   }
+
+   /**
     * Tests der Enter-Taste.
     */
    @Nested
@@ -465,6 +496,24 @@ class UPNCoreTest
          assertEquals(2, stack.size());
          assertEquals(6.0, stack.getX());
       }
+
+      /**
+       * Testet LastX aus dem Eingabemodus.
+       *
+       * @throws GeneralUserException
+       *             falls unerwartet ein Fehler auftritt
+       */
+      @Test
+      @DisplayName("LastX aus dem Eingabemodus")
+      void testPushLastXFromInputMode() throws GeneralUserException
+      {
+         upn.inputDigit(6);
+         upn.pushLastX();
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(2, stack.size());
+         assertEquals(0.0, stack.getX());
+      }
    }
 
    /**
@@ -513,6 +562,27 @@ class UPNCoreTest
          Stack<Double> stack = upn.getStack();
          assertEquals(1, stack.size());
          assertEquals(6.0, stack.getX());
+      }
+
+      /**
+       * Testet X<>Y aus dem Eingabemodus.
+       *
+       * @throws GeneralUserException
+       *             falls unerwartet ein Fehler auftritt
+       */
+      @Test
+      @DisplayName("X<>Y aus dem Eingabemodus")
+      void testSwapXYFromInputMode() throws GeneralUserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.inputDigit(2);
+         upn.swapXY();
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(6.0, stack.getX());
+         stack.pop();
+         assertEquals(2.0, stack.getX());
       }
    }
 
@@ -576,6 +646,33 @@ class UPNCoreTest
          assertTrue(upn.isInputMode());
          assertEquals("5", upn.getInputString());
          assertEquals("5", upn.getDisplayText());
+      }
+
+      /**
+       * Testet, dass der Fehlerzustand auch durch Dezimalpunkt endet.
+       */
+      @Test
+      @DisplayName("Dezimalpunkt beendet Fehlerzustand")
+      void testDecimalPointClearsErrorState()
+      {
+         assertThrows(GeneralUserException.class, new Executable()
+         {
+            @Override
+            public void execute() throws Throwable
+            {
+               upn.inputDigit(6);
+               upn.enter();
+               upn.inputDigit(0);
+               upn.applyOperator(operator);
+            }
+         });
+
+         upn.inputDecimalPoint();
+
+         assertFalse(upn.hasError());
+         assertTrue(upn.isInputMode());
+         assertEquals("0.", upn.getInputString());
+         assertEquals("0.", upn.getDisplayText());
       }
 
       /**
@@ -651,6 +748,23 @@ class UPNCoreTest
 
          assertTrue(upn.hasError());
          assertEquals("Err", upn.getDisplayText());
+      }
+
+      /**
+       * Testet applyOperator mit null.
+       */
+      @Test
+      @DisplayName("applyOperator mit null")
+      void testApplyOperatorNull()
+      {
+         assertThrows(IllegalArgumentException.class, new Executable()
+         {
+            @Override
+            public void execute() throws Throwable
+            {
+               upn.applyOperator(null);
+            }
+         });
       }
    }
 
