@@ -517,6 +517,144 @@ class UPNCoreTest
    }
 
    /**
+    * Tests des Fehlerverhaltens.
+    */
+   @Nested
+   @DisplayName("Fehlerverhalten")
+   class ErrorHandlingTest
+   {
+      /**
+       * Zu testender Operator.
+       */
+      private final Operator operator = new DivOperator();
+
+      /**
+       * Testet die Anzeige von Err nach einem Fehler.
+       */
+      @Test
+      @DisplayName("Display zeigt Err nach Division durch 0")
+      void testDisplayErrAfterError()
+      {
+         assertThrows(GeneralUserException.class, new Executable()
+         {
+            @Override
+            public void execute() throws Throwable
+            {
+               upn.inputDigit(6);
+               upn.enter();
+               upn.inputDigit(0);
+               upn.applyOperator(operator);
+            }
+         });
+
+         assertTrue(upn.hasError());
+         assertEquals("Err", upn.getDisplayText());
+      }
+
+      /**
+       * Testet, dass der Fehlerzustand beim nächsten Tastendruck endet.
+       */
+      @Test
+      @DisplayName("Naechster Tastendruck beendet Fehlerzustand")
+      void testNextKeyClearsErrorState()
+      {
+         assertThrows(GeneralUserException.class, new Executable()
+         {
+            @Override
+            public void execute() throws Throwable
+            {
+               upn.inputDigit(6);
+               upn.enter();
+               upn.inputDigit(0);
+               upn.applyOperator(operator);
+            }
+         });
+
+         upn.inputDigit(5);
+
+         assertFalse(upn.hasError());
+         assertTrue(upn.isInputMode());
+         assertEquals("5", upn.getInputString());
+         assertEquals("5", upn.getDisplayText());
+      }
+
+      /**
+       * Testet, dass der Stack bei einem Fehler unverändert bleibt.
+       */
+      @Test
+      @DisplayName("Stack bleibt bei Fehler unveraendert")
+      void testStackUnchangedOnError() throws GeneralUserException
+      {
+         upn.inputDigit(8);
+         upn.enter();
+
+         Stack<Double> stackBefore = upn.getStack();
+
+         assertThrows(GeneralUserException.class, new Executable()
+         {
+            @Override
+            public void execute() throws Throwable
+            {
+               upn.inputDigit(0);
+               upn.applyOperator(operator);
+            }
+         });
+
+         Stack<Double> stackAfter = upn.getStack();
+
+         assertEquals(stackBefore.size(), stackAfter.size());
+         assertEquals(stackBefore.getX(), stackAfter.getX());
+      }
+
+      /**
+       * Testet, dass LastX bei einem Fehler unverändert bleibt.
+       */
+      @Test
+      @DisplayName("LastX bleibt bei Fehler unveraendert")
+      void testLastXUnchangedOnError() throws GeneralUserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.changeSign();
+
+         double lastXBefore = upn.getLastX();
+
+         assertThrows(GeneralUserException.class, new Executable()
+         {
+            @Override
+            public void execute() throws Throwable
+            {
+               upn.inputDigit(0);
+               upn.applyOperator(operator);
+            }
+         });
+
+         assertEquals(lastXBefore, upn.getLastX());
+      }
+
+      /**
+       * Testet einen Fehler bei zu wenigen Operanden.
+       */
+      @Test
+      @DisplayName("Division mit zu wenigen Operanden")
+      void testTooFewOperands()
+      {
+         assertThrows(GeneralUserException.class, new Executable()
+         {
+            @Override
+            public void execute() throws Throwable
+            {
+               upn.inputDigit(6);
+               upn.applyOperator(operator);
+            }
+         });
+
+         assertTrue(upn.hasError());
+         assertEquals("Err", upn.getDisplayText());
+      }
+   }
+
+   /**
     * Test Division.
     */
    @Nested

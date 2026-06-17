@@ -259,8 +259,8 @@ public class DefaultUPNCore implements UPNCore
          stack.clear();
          stack.addAll(oldStack);
          lastX = oldLastX;
-         inputString = oldInputString;
-         inputMode = oldInputMode;
+         inputString = null;
+         inputMode = false;
          error = true;
          throw e;
       }
