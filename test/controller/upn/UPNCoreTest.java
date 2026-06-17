@@ -276,6 +276,247 @@ class UPNCoreTest
    }
 
    /**
+    * Tests der Enter-Taste.
+    */
+   @Nested
+   @DisplayName("Enter")
+   class EnterTest
+   {
+      /**
+       * Testet Enter im Eingabemodus.
+       *
+       * @throws GeneralUserException
+       *             falls unerwartet ein Fehler auftritt
+       */
+      @Test
+      @DisplayName("Eingabe 6 und Enter")
+      void testEnterFromInputMode() throws GeneralUserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+
+         assertFalse(upn.isInputMode());
+         assertNull(upn.getInputString());
+         assertEquals("6.0", upn.getDisplayText());
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(1, stack.size());
+         assertEquals(6.0, stack.getX());
+      }
+
+      /**
+       * Testet Enter im Funktionsmodus bei leerem Stack.
+       *
+       * @throws GeneralUserException
+       *             falls unerwartet ein Fehler auftritt
+       */
+      @Test
+      @DisplayName("Enter bei leerem Stack legt 0.0 auf den Stack")
+      void testEnterOnEmptyStack() throws GeneralUserException
+      {
+         upn.clear();
+         upn.enter();
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(1, stack.size());
+         assertEquals(0.0, stack.getX());
+         assertEquals("0.0", upn.getDisplayText());
+      }
+
+      /**
+       * Testet Enter im Funktionsmodus bei vorhandenem X-Register.
+       *
+       * @throws GeneralUserException
+       *             falls unerwartet ein Fehler auftritt
+       */
+      @Test
+      @DisplayName("Enter im Funktionsmodus dupliziert X")
+      void testEnterDuplicatesX() throws GeneralUserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.enter();
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(2, stack.size());
+         assertEquals(6.0, stack.getX());
+         assertEquals("6.0", upn.getDisplayText());
+      }
+   }
+
+   /**
+    * Tests der CLR-Taste.
+    */
+   @Nested
+   @DisplayName("CLR")
+   class ClearTest
+   {
+      /**
+       * Testet das vollständige Zurücksetzen des Rechners.
+       *
+       * @throws GeneralUserException
+       *             falls unerwartet ein Fehler auftritt
+       */
+      @Test
+      @DisplayName("CLR setzt den Rechner zurück")
+      void testClear() throws GeneralUserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.changeSign();
+         upn.clear();
+
+         assertFalse(upn.isInputMode());
+         assertFalse(upn.hasError());
+         assertNull(upn.getInputString());
+         assertEquals(0.0, upn.getLastX());
+         assertEquals("0.0", upn.getDisplayText());
+         assertTrue(upn.getStack().isEmpty());
+      }
+   }
+
+   /**
+    * Tests der CLX-Taste.
+    */
+   @Nested
+   @DisplayName("CLX")
+   class ClearXTest
+   {
+      /**
+       * Testet CLX bei vorhandenem X-Register.
+       *
+       * @throws GeneralUserException
+       *             falls unerwartet ein Fehler auftritt
+       */
+      @Test
+      @DisplayName("CLX löscht X")
+      void testClearX() throws GeneralUserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.clearX();
+
+         assertTrue(upn.getStack().isEmpty());
+         assertEquals("0.0", upn.getDisplayText());
+      }
+
+      /**
+       * Testet CLX aus dem Eingabemodus heraus.
+       *
+       * @throws GeneralUserException
+       *             falls unerwartet ein Fehler auftritt
+       */
+      @Test
+      @DisplayName("CLX aus dem Eingabemodus")
+      void testClearXFromInputMode() throws GeneralUserException
+      {
+         upn.inputDigit(6);
+         upn.clearX();
+
+         assertFalse(upn.isInputMode());
+         assertNull(upn.getInputString());
+         assertTrue(upn.getStack().isEmpty());
+         assertEquals("0.0", upn.getDisplayText());
+      }
+   }
+
+   /**
+    * Tests der LastX-Taste.
+    */
+   @Nested
+   @DisplayName("LastX")
+   class PushLastXTest
+   {
+      /**
+       * Testet LastX mit Default-Wert.
+       *
+       * @throws GeneralUserException
+       *             falls unerwartet ein Fehler auftritt
+       */
+      @Test
+      @DisplayName("LastX mit Default-Wert 0.0")
+      void testPushDefaultLastX() throws GeneralUserException
+      {
+         upn.clear();
+         upn.pushLastX();
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(1, stack.size());
+         assertEquals(0.0, stack.getX());
+         assertEquals("0.0", upn.getDisplayText());
+      }
+
+      /**
+       * Testet LastX nach Vorzeichenwechsel.
+       *
+       * @throws GeneralUserException
+       *             falls unerwartet ein Fehler auftritt
+       */
+      @Test
+      @DisplayName("LastX nach changeSign")
+      void testPushSavedLastX() throws GeneralUserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.changeSign();
+         upn.pushLastX();
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(2, stack.size());
+         assertEquals(6.0, stack.getX());
+      }
+   }
+
+   /**
+    * Tests der X<>Y-Taste.
+    */
+   @Nested
+   @DisplayName("X<>Y")
+   class SwapXYTest
+   {
+      /**
+       * Testet das Vertauschen von X und Y.
+       *
+       * @throws GeneralUserException
+       *             falls unerwartet ein Fehler auftritt
+       */
+      @Test
+      @DisplayName("X und Y werden vertauscht")
+      void testSwapXY() throws GeneralUserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.inputDigit(2);
+         upn.enter();
+         upn.swapXY();
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(6.0, stack.getX());
+         stack.pop();
+         assertEquals(2.0, stack.getX());
+      }
+
+      /**
+       * Testet X<>Y bei nur einem Stackelement.
+       *
+       * @throws GeneralUserException
+       *             falls unerwartet ein Fehler auftritt
+       */
+      @Test
+      @DisplayName("X<>Y mit nur einem Element")
+      void testSwapXYWithOneElement() throws GeneralUserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.swapXY();
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(1, stack.size());
+         assertEquals(6.0, stack.getX());
+      }
+   }
+
+   /**
     * Test Division.
     */
    @Nested
