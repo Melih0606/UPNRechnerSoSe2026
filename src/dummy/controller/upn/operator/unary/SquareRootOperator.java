@@ -1,6 +1,7 @@
 package dummy.controller.upn.operator.unary;
 
-import common.exception.GeneralUserException;
+import common.exception.IllegalUserInputException;
+import common.exception.UserException;
 import controller.upn.operator.Operator;
 import model.Stack;
 
@@ -12,7 +13,7 @@ import model.Stack;
 public class SquareRootOperator implements Operator
 {
    @Override
-   public void calculate(Stack<Double> stack) throws GeneralUserException
+   public void calculate(Stack<Double> stack) throws UserException
    {
       if (stack == null)
       {
@@ -22,14 +23,14 @@ public class SquareRootOperator implements Operator
 
       if (stack.isEmpty())
       {
-         throw new GeneralUserException("Zu wenige Operanden.");
+         throw new IllegalUserInputException("Zu wenige Operanden.");
       }
 
       double x = stack.pop();
 
       if (x < 0.0)
       {
-         throw new GeneralUserException(
+         throw new IllegalUserInputException(
                "Quadratwurzel aus negativem Wert ist nicht erlaubt.");
       }
 
@@ -37,7 +38,7 @@ public class SquareRootOperator implements Operator
 
       if (Double.isNaN(result) || Double.isInfinite(result))
       {
-         throw new GeneralUserException("Ungueltiges Ergebnis.");
+         throw new IllegalUserInputException("Ungueltiges Ergebnis.");
       }
 
       stack.push(result);

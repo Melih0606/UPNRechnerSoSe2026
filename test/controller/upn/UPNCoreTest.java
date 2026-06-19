@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
-import common.exception.GeneralUserException;
+import common.exception.UserException;
 import controller.upn.operator.Operator;
 import dummy.controller.upn.DefaultUPNCore;
 import dummy.controller.upn.operator.binary.AddOperator;
@@ -202,7 +202,7 @@ class UPNCoreTest
 
       @Test
       @DisplayName("Minus und Dezimalpunkt im Eingabemodus ergibt -0.")
-      void testDecimalPointAfterNegativeSign() throws GeneralUserException
+      void testDecimalPointAfterNegativeSign() throws UserException
       {
          upn.inputDigit(0);
          upn.changeSign();
@@ -221,7 +221,7 @@ class UPNCoreTest
       {
          @Test
          @DisplayName("6 wird zu -6")
-         void testChangeSignToNegative() throws GeneralUserException
+         void testChangeSignToNegative() throws UserException
          {
             upn.inputDigit(6);
             upn.changeSign();
@@ -233,7 +233,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("-6 wird wieder zu 6")
-         void testChangeSignBackToPositive() throws GeneralUserException
+         void testChangeSignBackToPositive() throws UserException
          {
             upn.inputDigit(6);
             upn.changeSign();
@@ -254,7 +254,7 @@ class UPNCoreTest
       {
          @Test
          @DisplayName("6 wird im Funktionsmodus zu -6.0")
-         void testChangeSignFunctionMode() throws GeneralUserException
+         void testChangeSignFunctionMode() throws UserException
          {
             upn.inputDigit(6);
             upn.enter();
@@ -271,7 +271,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("Vorzeichenwechsel bei leerem Stack bleibt ohne Wirkung")
-         void testChangeSignEmptyStack() throws GeneralUserException
+         void testChangeSignEmptyStack() throws UserException
          {
             upn.changeSign();
 
@@ -290,7 +290,7 @@ class UPNCoreTest
       {
          @Test
          @DisplayName("Eingabe 6 und Enter")
-         void testEnterFromInputMode() throws GeneralUserException
+         void testEnterFromInputMode() throws UserException
          {
             upn.inputDigit(6);
             upn.enter();
@@ -306,7 +306,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("Enter bei leerem Stack legt 0.0 auf den Stack")
-         void testEnterOnEmptyStack() throws GeneralUserException
+         void testEnterOnEmptyStack() throws UserException
          {
             upn.clear();
             upn.enter();
@@ -319,7 +319,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("Enter im Funktionsmodus dupliziert X")
-         void testEnterDuplicatesX() throws GeneralUserException
+         void testEnterDuplicatesX() throws UserException
          {
             upn.inputDigit(6);
             upn.enter();
@@ -341,7 +341,7 @@ class UPNCoreTest
       {
          @Test
          @DisplayName("CLR setzt den Rechner zurück")
-         void testClear() throws GeneralUserException
+         void testClear() throws UserException
          {
             upn.inputDigit(6);
             upn.enter();
@@ -362,7 +362,7 @@ class UPNCoreTest
          {
             final Operator operator = new DivOperator();
 
-            assertThrows(GeneralUserException.class, new Executable()
+            assertThrows(UserException.class, new Executable()
             {
                @Override
                public void execute() throws Throwable
@@ -390,7 +390,7 @@ class UPNCoreTest
       {
          @Test
          @DisplayName("CLX löscht X")
-         void testClearX() throws GeneralUserException
+         void testClearX() throws UserException
          {
             upn.inputDigit(6);
             upn.enter();
@@ -402,7 +402,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("CLX aus dem Eingabemodus")
-         void testClearXFromInputMode() throws GeneralUserException
+         void testClearXFromInputMode() throws UserException
          {
             upn.inputDigit(6);
             upn.clearX();
@@ -415,7 +415,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("CLX bei leerem Stack bleibt ohne Wirkung")
-         void testClearXOnEmptyStack() throws GeneralUserException
+         void testClearXOnEmptyStack() throws UserException
          {
             upn.clearX();
 
@@ -433,7 +433,7 @@ class UPNCoreTest
       {
          @Test
          @DisplayName("LastX mit Default-Wert 0.0")
-         void testPushDefaultLastX() throws GeneralUserException
+         void testPushDefaultLastX() throws UserException
          {
             upn.clear();
             upn.pushLastX();
@@ -446,7 +446,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("LastX nach changeSign")
-         void testPushSavedLastX() throws GeneralUserException
+         void testPushSavedLastX() throws UserException
          {
             upn.inputDigit(6);
             upn.enter();
@@ -460,7 +460,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("LastX aus dem Eingabemodus")
-         void testPushLastXFromInputMode() throws GeneralUserException
+         void testPushLastXFromInputMode() throws UserException
          {
             upn.inputDigit(6);
             upn.pushLastX();
@@ -480,7 +480,7 @@ class UPNCoreTest
       {
          @Test
          @DisplayName("X und Y werden vertauscht")
-         void testSwapXY() throws GeneralUserException
+         void testSwapXY() throws UserException
          {
             upn.inputDigit(6);
             upn.enter();
@@ -496,7 +496,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("X<>Y mit nur einem Element")
-         void testSwapXYWithOneElement() throws GeneralUserException
+         void testSwapXYWithOneElement() throws UserException
          {
             upn.inputDigit(6);
             upn.enter();
@@ -509,7 +509,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("X<>Y mit leerem Stack")
-         void testSwapXYOnEmptyStack() throws GeneralUserException
+         void testSwapXYOnEmptyStack() throws UserException
          {
             upn.swapXY();
 
@@ -519,7 +519,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("X<>Y aus dem Eingabemodus")
-         void testSwapXYFromInputMode() throws GeneralUserException
+         void testSwapXYFromInputMode() throws UserException
          {
             upn.inputDigit(6);
             upn.enter();
@@ -544,7 +544,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("6 + 2 = 8")
-         void testAdd() throws GeneralUserException
+         void testAdd() throws UserException
          {
             upn.inputDigit(6);
             upn.enter();
@@ -567,7 +567,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("6 - 2 = 4")
-         void testSub() throws GeneralUserException
+         void testSub() throws UserException
          {
             upn.inputDigit(6);
             upn.enter();
@@ -589,7 +589,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("6 * 2 = 12")
-         void testMul() throws GeneralUserException
+         void testMul() throws UserException
          {
             upn.inputDigit(6);
             upn.enter();
@@ -611,7 +611,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("6 / 2 = 3")
-         void testOk() throws GeneralUserException
+         void testOk() throws UserException
          {
             upn.clear();
             upn.inputDigit(6);
@@ -629,7 +629,7 @@ class UPNCoreTest
          @DisplayName("6 / 0")
          void testDiv0()
          {
-            assertThrows(GeneralUserException.class, new Executable()
+            assertThrows(UserException.class, new Executable()
             {
                @Override
                public void execute() throws Throwable
@@ -655,7 +655,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("Kehrwert von 2 ist 0.5")
-         void testReciprocal() throws GeneralUserException
+         void testReciprocal() throws UserException
          {
             upn.inputDigit(2);
             upn.applyOperator(operator);
@@ -668,7 +668,7 @@ class UPNCoreTest
          @DisplayName("Kehrwert von 0 ist Fehler")
          void testReciprocalZero()
          {
-            assertThrows(GeneralUserException.class, new Executable()
+            assertThrows(UserException.class, new Executable()
             {
                @Override
                public void execute() throws Throwable
@@ -691,7 +691,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("2 ^ 3 = 8")
-         void testPower() throws GeneralUserException
+         void testPower() throws UserException
          {
             upn.inputDigit(2);
             upn.enter();
@@ -705,7 +705,7 @@ class UPNCoreTest
          @DisplayName("0 ^ -1 ist Fehler")
          void testPowerInvalid()
          {
-            assertThrows(GeneralUserException.class, new Executable()
+            assertThrows(UserException.class, new Executable()
             {
                @Override
                public void execute() throws Throwable
@@ -731,7 +731,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("Sqrt von 9 ist 3")
-         void testSquareRoot() throws GeneralUserException
+         void testSquareRoot() throws UserException
          {
             upn.inputDigit(9);
             upn.applyOperator(operator);
@@ -743,7 +743,7 @@ class UPNCoreTest
          @DisplayName("Sqrt von -9 ist Fehler")
          void testSquareRootNegative()
          {
-            assertThrows(GeneralUserException.class, new Executable()
+            assertThrows(UserException.class, new Executable()
             {
                @Override
                public void execute() throws Throwable
@@ -767,7 +767,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("LN von 1 ist 0")
-         void testLn() throws GeneralUserException
+         void testLn() throws UserException
          {
             upn.inputDigit(1);
             upn.applyOperator(operator);
@@ -779,7 +779,7 @@ class UPNCoreTest
          @DisplayName("LN von 0 ist Fehler")
          void testLnZero()
          {
-            assertThrows(GeneralUserException.class, new Executable()
+            assertThrows(UserException.class, new Executable()
             {
                @Override
                public void execute() throws Throwable
@@ -802,7 +802,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("SIN von 0 ist 0")
-         void testSin() throws GeneralUserException
+         void testSin() throws UserException
          {
             upn.inputDigit(0);
             upn.applyOperator(operator);
@@ -822,7 +822,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("COS von 0 ist 1")
-         void testCos() throws GeneralUserException
+         void testCos() throws UserException
          {
             upn.inputDigit(0);
             upn.applyOperator(operator);
@@ -842,7 +842,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("TAN von 0 ist 0")
-         void testTan() throws GeneralUserException
+         void testTan() throws UserException
          {
             upn.inputDigit(0);
             upn.applyOperator(operator);
@@ -864,7 +864,7 @@ class UPNCoreTest
          @DisplayName("Display zeigt Err nach Division durch 0")
          void testDisplayErrAfterError()
          {
-            assertThrows(GeneralUserException.class, new Executable()
+            assertThrows(UserException.class, new Executable()
             {
                @Override
                public void execute() throws Throwable
@@ -884,7 +884,7 @@ class UPNCoreTest
          @DisplayName("Naechster Tastendruck beendet Fehlerzustand")
          void testNextKeyClearsErrorState()
          {
-            assertThrows(GeneralUserException.class, new Executable()
+            assertThrows(UserException.class, new Executable()
             {
                @Override
                public void execute() throws Throwable
@@ -908,7 +908,7 @@ class UPNCoreTest
          @DisplayName("Dezimalpunkt beendet Fehlerzustand")
          void testDecimalPointClearsErrorState()
          {
-            assertThrows(GeneralUserException.class, new Executable()
+            assertThrows(UserException.class, new Executable()
             {
                @Override
                public void execute() throws Throwable
@@ -930,14 +930,14 @@ class UPNCoreTest
 
          @Test
          @DisplayName("Stack bleibt bei Fehler unveraendert")
-         void testStackUnchangedOnError() throws GeneralUserException
+         void testStackUnchangedOnError() throws UserException
          {
             upn.inputDigit(8);
             upn.enter();
 
             Stack<Double> stackBefore = upn.getStack();
 
-            assertThrows(GeneralUserException.class, new Executable()
+            assertThrows(UserException.class, new Executable()
             {
                @Override
                public void execute() throws Throwable
@@ -955,7 +955,7 @@ class UPNCoreTest
 
          @Test
          @DisplayName("LastX bleibt bei Fehler unveraendert")
-         void testLastXUnchangedOnError() throws GeneralUserException
+         void testLastXUnchangedOnError() throws UserException
          {
             upn.inputDigit(6);
             upn.enter();
@@ -963,7 +963,7 @@ class UPNCoreTest
 
             double lastXBefore = upn.getLastX();
 
-            assertThrows(GeneralUserException.class, new Executable()
+            assertThrows(UserException.class, new Executable()
             {
                @Override
                public void execute() throws Throwable
@@ -980,7 +980,7 @@ class UPNCoreTest
          @DisplayName("Division mit zu wenigen Operanden")
          void testTooFewOperands()
          {
-            assertThrows(GeneralUserException.class, new Executable()
+            assertThrows(UserException.class, new Executable()
             {
                @Override
                public void execute() throws Throwable

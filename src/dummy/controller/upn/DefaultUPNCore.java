@@ -1,6 +1,7 @@
 package dummy.controller.upn;
 
-import common.exception.GeneralUserException;
+import common.exception.IllegalUserInputException;
+import common.exception.UserException;
 import controller.upn.UPNCore;
 import controller.upn.operator.Operator;
 import model.Stack;
@@ -59,11 +60,11 @@ public class DefaultUPNCore implements UPNCore
     * Eingabezeile gelöscht.
     * </p>
     *
-    * @throws GeneralUserException
+    * @throws UserException
     *            falls die Eingabezeile nicht in einen gültigen Double-Wert
     *            konvertiert werden kann
     */
-   private void setFunctionMode() throws GeneralUserException
+   private void setFunctionMode() throws UserException
    {
       if (inputString != null)
       {
@@ -73,7 +74,7 @@ public class DefaultUPNCore implements UPNCore
 
             if (Double.isNaN(value) || Double.isInfinite(value))
             {
-               throw new GeneralUserException("Ungueltiger Eingabewert.");
+               throw new IllegalUserInputException("Ungueltiger Eingabewert.");
             }
 
             stack.push(value);
@@ -81,7 +82,7 @@ public class DefaultUPNCore implements UPNCore
          }
          catch (NumberFormatException e)
          {
-            throw new GeneralUserException("Ungueltiger Eingabewert.");
+            throw new IllegalUserInputException("Ungueltiger Eingabewert.", e);
          }
       }
 
@@ -140,7 +141,7 @@ public class DefaultUPNCore implements UPNCore
    }
 
    @Override
-   public void changeSign() throws GeneralUserException
+   public void changeSign() throws UserException
    {
       clearErrorState();
 
@@ -168,7 +169,7 @@ public class DefaultUPNCore implements UPNCore
    }
 
    @Override
-   public void enter() throws GeneralUserException
+   public void enter() throws UserException
    {
       clearErrorState();
 
@@ -200,7 +201,7 @@ public class DefaultUPNCore implements UPNCore
    }
 
    @Override
-   public void clearX() throws GeneralUserException
+   public void clearX() throws UserException
    {
       clearErrorState();
       setFunctionMode();
@@ -212,7 +213,7 @@ public class DefaultUPNCore implements UPNCore
    }
 
    @Override
-   public void pushLastX() throws GeneralUserException
+   public void pushLastX() throws UserException
    {
       clearErrorState();
       setFunctionMode();
@@ -220,7 +221,7 @@ public class DefaultUPNCore implements UPNCore
    }
 
    @Override
-   public void swapXY() throws GeneralUserException
+   public void swapXY() throws UserException
    {
       clearErrorState();
       setFunctionMode();
@@ -228,7 +229,7 @@ public class DefaultUPNCore implements UPNCore
    }
 
    @Override
-   public void applyOperator(Operator operator) throws GeneralUserException
+   public void applyOperator(Operator operator) throws UserException
    {
       if (operator == null)
       {
@@ -254,13 +255,13 @@ public class DefaultUPNCore implements UPNCore
 
          operator.calculate(stack);
       }
-      catch (GeneralUserException e)
+      catch (UserException e)
       {
          stack.clear();
          stack.addAll(oldStack);
          lastX = oldLastX;
-         inputString = null;
-         inputMode = false;
+         inputString = oldInputString;
+         inputMode = oldInputMode;
          error = true;
          throw e;
       }

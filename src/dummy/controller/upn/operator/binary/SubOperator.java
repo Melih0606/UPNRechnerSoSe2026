@@ -1,6 +1,7 @@
 package dummy.controller.upn.operator.binary;
 
-import common.exception.GeneralUserException;
+import common.exception.IllegalUserInputException;
+import common.exception.UserException;
 import controller.upn.operator.Operator;
 import model.Stack;
 
@@ -12,7 +13,7 @@ import model.Stack;
 public class SubOperator implements Operator
 {
    @Override
-   public void calculate(Stack<Double> stack) throws GeneralUserException
+   public void calculate(Stack<Double> stack) throws UserException
    {
       if (stack == null)
       {
@@ -22,7 +23,7 @@ public class SubOperator implements Operator
 
       if (stack.size() < 2)
       {
-         throw new GeneralUserException("Zu wenige Operanden.");
+         throw new IllegalUserInputException("Zu wenige Operanden.");
       }
 
       double x = stack.pop();
@@ -31,7 +32,7 @@ public class SubOperator implements Operator
 
       if (Double.isNaN(result) || Double.isInfinite(result))
       {
-         throw new GeneralUserException("Ungueltiges Ergebnis.");
+         throw new IllegalUserInputException("Ungueltiges Ergebnis.");
       }
 
       stack.push(result);

@@ -1,6 +1,6 @@
 package controller.upn;
 
-import common.exception.GeneralUserException;
+import common.exception.UserException;
 import controller.upn.operator.Operator;
 import model.Stack;
 
@@ -71,12 +71,12 @@ public interface UPNCore
     * Tastendruck beendet.
     * </p>
     *
-    * @throws GeneralUserException
+    * @throws UserException
     *             wenn der Vorzeichenwechsel im Funktionsmodus nicht moeglich
     *             ist, zum Beispiel weil kein X-Register vorhanden ist oder das
     *             Ergebnis nicht endlich ist
     */
-   void changeSign() throws GeneralUserException;
+   void changeSign() throws UserException;
 
    /**
     * Verarbeitet den Druck auf die Enter-Taste.
@@ -90,12 +90,12 @@ public interface UPNCore
     * im Funktionsmodus.
     * </p>
     *
-    * @throws GeneralUserException
+    * @throws UserException
     *             wenn die Eingabezeile nicht in einen {@code double}
     *             konvertiert werden kann oder das Kopieren des X-Registers
     *             fehlschlaegt
     */
-   void enter() throws GeneralUserException;
+   void enter() throws UserException;
 
    /**
     * Loescht den gesamten Stack und setzt das LastX-Register auf den
@@ -119,11 +119,11 @@ public interface UPNCore
     * LastX-Register wird durch diese Stackmanipulation nicht veraendert.
     * </p>
     *
-    * @throws GeneralUserException
+    * @throws UserException
     *             wenn eine vorhandene Eingabezeile nicht auf den Stack
     *             uebernommen werden kann
     */
-   void clearX() throws GeneralUserException;
+   void clearX() throws UserException;
 
    /**
     * Schiebt den Inhalt des LastX-Registers auf den Stack.
@@ -134,11 +134,11 @@ public interface UPNCore
     * neuen X-Register. Der Anfangswert von LastX ist {@code 0.0}.
     * </p>
     *
-    * @throws GeneralUserException
+    * @throws UserException
     *             wenn eine vorhandene Eingabezeile nicht auf den Stack
     *             uebernommen werden kann
     */
-   void pushLastX() throws GeneralUserException;
+   void pushLastX() throws UserException;
 
    /**
     * Vertauscht die beiden untersten Elemente des Stacks.
@@ -150,11 +150,11 @@ public interface UPNCore
     * LastX-Register wird durch diese Stackmanipulation nicht veraendert.
     * </p>
     *
-    * @throws GeneralUserException
+    * @throws UserException
     *             wenn eine vorhandene Eingabezeile nicht auf den Stack
     *             uebernommen werden kann
     */
-   void swapXY() throws GeneralUserException;
+   void swapXY() throws UserException;
 
    /**
     * Fuehrt eine mathematische Operation auf dem Stack aus.
@@ -164,10 +164,10 @@ public interface UPNCore
     *            {@code null} sein
     * @throws IllegalArgumentException
     *             wenn {@code operator} {@code null} ist
-    * @throws GeneralUserException
+    * @throws UserException
     *             wenn die Operation nicht erfolgreich ausgefuehrt werden kann
     */
-   void applyOperator(Operator operator) throws GeneralUserException;
+   void applyOperator(Operator operator) throws UserException;
 
    /**
     * Liefert den Text, der im Display angezeigt werden soll.
