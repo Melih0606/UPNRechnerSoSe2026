@@ -1,4 +1,4 @@
-package dummy.controller.upn.operator.binary;
+package dummy.ui.controller.upn.operator.unary;
 
 import common.exception.IllegalUserInputException;
 import common.exception.UserException;
@@ -6,11 +6,11 @@ import controller.upn.operator.Operator;
 import model.Stack;
 
 /**
- * Dummy-Implementierung des Divisionsoperators.
+ * Dummy-Implementierung des Kosinusoperators.
  *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */
-public class DivOperator implements Operator
+public class CosOperator implements Operator
 {
    @Override
    public void calculate(Stack<Double> stack) throws UserException
@@ -21,21 +21,13 @@ public class DivOperator implements Operator
                "Der Stack darf nicht null sein.");
       }
 
-      if (stack.size() < 2)
+      if (stack.isEmpty())
       {
          throw new IllegalUserInputException("Zu wenige Operanden.");
       }
 
       double x = stack.pop();
-      double y = stack.pop();
-
-      if (x == 0.0)
-      {
-         throw new IllegalUserInputException(
-               "Division durch 0 ist nicht erlaubt.");
-      }
-
-      double result = y / x;
+      double result = Math.cos(x);
 
       if (Double.isNaN(result) || Double.isInfinite(result))
       {

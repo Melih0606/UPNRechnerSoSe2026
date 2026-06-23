@@ -1,4 +1,4 @@
-package dummy.controller.upn.operator.unary;
+package dummy.ui.controller.upn.operator.binary;
 
 import common.exception.IllegalUserInputException;
 import common.exception.UserException;
@@ -6,11 +6,11 @@ import controller.upn.operator.Operator;
 import model.Stack;
 
 /**
- * Dummy-Implementierung des Logarithmusoperators.
+ * Dummy-Implementierung des Potenzoperators.
  *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */
-public class LnOperator implements Operator
+public class PowerOperator implements Operator
 {
    @Override
    public void calculate(Stack<Double> stack) throws UserException
@@ -21,20 +21,14 @@ public class LnOperator implements Operator
                "Der Stack darf nicht null sein.");
       }
 
-      if (stack.isEmpty())
+      if (stack.size() < 2)
       {
          throw new IllegalUserInputException("Zu wenige Operanden.");
       }
 
       double x = stack.pop();
-
-      if (x <= 0.0)
-      {
-         throw new IllegalUserInputException(
-               "Der Logarithmus ist nur fuer positive Werte definiert.");
-      }
-
-      double result = Math.log(x);
+      double y = stack.pop();
+      double result = Math.pow(y, x);
 
       if (Double.isNaN(result) || Double.isInfinite(result))
       {

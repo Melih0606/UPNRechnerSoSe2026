@@ -1,4 +1,4 @@
-package dummy.controller.upn;
+package dummy.ui.controller.upn;
 
 import common.exception.IllegalUserInputException;
 import common.exception.UserException;
@@ -260,8 +260,8 @@ public class DefaultUPNCore implements UPNCore
          stack.clear();
          stack.addAll(oldStack);
          lastX = oldLastX;
-         inputString = oldInputString;
-         inputMode = oldInputMode;
+         inputString = null;
+         inputMode = false;
          error = true;
          throw e;
       }

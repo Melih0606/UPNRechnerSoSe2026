@@ -1,4 +1,4 @@
-package dummy.controller.upn.operator.unary;
+package dummy.ui.controller.upn.operator.unary;
 
 import common.exception.IllegalUserInputException;
 import common.exception.UserException;

@@ -14,18 +14,18 @@ import org.junit.jupiter.api.function.Executable;
 
 import common.exception.UserException;
 import controller.upn.operator.Operator;
-import dummy.controller.upn.DefaultUPNCore;
-import dummy.controller.upn.operator.binary.AddOperator;
-import dummy.controller.upn.operator.binary.DivOperator;
-import dummy.controller.upn.operator.binary.MulOperator;
-import dummy.controller.upn.operator.binary.PowerOperator;
-import dummy.controller.upn.operator.binary.SubOperator;
-import dummy.controller.upn.operator.unary.CosOperator;
-import dummy.controller.upn.operator.unary.LnOperator;
-import dummy.controller.upn.operator.unary.ReciprocalOperator;
-import dummy.controller.upn.operator.unary.SinOperator;
-import dummy.controller.upn.operator.unary.SquareRootOperator;
-import dummy.controller.upn.operator.unary.TanOperator;
+import dummy.ui.controller.upn.DefaultUPNCore;
+import dummy.ui.controller.upn.operator.binary.AddOperator;
+import dummy.ui.controller.upn.operator.binary.DivOperator;
+import dummy.ui.controller.upn.operator.binary.MulOperator;
+import dummy.ui.controller.upn.operator.binary.PowerOperator;
+import dummy.ui.controller.upn.operator.binary.SubOperator;
+import dummy.ui.controller.upn.operator.unary.CosOperator;
+import dummy.ui.controller.upn.operator.unary.LnOperator;
+import dummy.ui.controller.upn.operator.unary.ReciprocalOperator;
+import dummy.ui.controller.upn.operator.unary.SinOperator;
+import dummy.ui.controller.upn.operator.unary.SquareRootOperator;
+import dummy.ui.controller.upn.operator.unary.TanOperator;
 import model.Stack;
 
 /**
@@ -211,802 +211,802 @@ class UPNCoreTest
          assertEquals("-0.", upn.getInputString());
          assertEquals("-0.", upn.getDisplayText());
       }
+   }
 
-      /**
-       * Tests des Vorzeichenwechsels im Eingabemodus.
-       */
-      @Nested
-      @DisplayName("+/- im Eingabemodus")
-      class ChangeSignInputModeTest
+   /**
+    * Tests des Vorzeichenwechsels im Eingabemodus.
+    */
+   @Nested
+   @DisplayName("+/- im Eingabemodus")
+   class ChangeSignInputModeTest
+   {
+      @Test
+      @DisplayName("6 wird zu -6")
+      void testChangeSignToNegative() throws UserException
       {
-         @Test
-         @DisplayName("6 wird zu -6")
-         void testChangeSignToNegative() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.changeSign();
+         upn.inputDigit(6);
+         upn.changeSign();
 
-            assertTrue(upn.isInputMode());
-            assertEquals("-6", upn.getInputString());
-            assertEquals("-6", upn.getDisplayText());
-         }
-
-         @Test
-         @DisplayName("-6 wird wieder zu 6")
-         void testChangeSignBackToPositive() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.changeSign();
-            upn.changeSign();
-
-            assertTrue(upn.isInputMode());
-            assertEquals("6", upn.getInputString());
-            assertEquals("6", upn.getDisplayText());
-         }
+         assertTrue(upn.isInputMode());
+         assertEquals("-6", upn.getInputString());
+         assertEquals("-6", upn.getDisplayText());
       }
 
-      /**
-       * Tests des Vorzeichenwechsels im Funktionsmodus.
-       */
-      @Nested
-      @DisplayName("+/- im Funktionsmodus")
-      class ChangeSignFunctionModeTest
+      @Test
+      @DisplayName("-6 wird wieder zu 6")
+      void testChangeSignBackToPositive() throws UserException
       {
-         @Test
-         @DisplayName("6 wird im Funktionsmodus zu -6.0")
-         void testChangeSignFunctionMode() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.enter();
-            upn.changeSign();
+         upn.inputDigit(6);
+         upn.changeSign();
+         upn.changeSign();
 
-            assertFalse(upn.isInputMode());
-            assertEquals("-6.0", upn.getDisplayText());
-            assertEquals(6.0, upn.getLastX());
+         assertTrue(upn.isInputMode());
+         assertEquals("6", upn.getInputString());
+         assertEquals("6", upn.getDisplayText());
+      }
+   }
 
-            Stack<Double> stack = upn.getStack();
-            assertEquals(1, stack.size());
-            assertEquals(-6.0, stack.getX());
-         }
+   /**
+    * Tests des Vorzeichenwechsels im Funktionsmodus.
+    */
+   @Nested
+   @DisplayName("+/- im Funktionsmodus")
+   class ChangeSignFunctionModeTest
+   {
+      @Test
+      @DisplayName("6 wird im Funktionsmodus zu -6.0")
+      void testChangeSignFunctionMode() throws UserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.changeSign();
 
-         @Test
-         @DisplayName("Vorzeichenwechsel bei leerem Stack bleibt ohne Wirkung")
-         void testChangeSignEmptyStack() throws UserException
-         {
-            upn.changeSign();
+         assertFalse(upn.isInputMode());
+         assertEquals("-6.0", upn.getDisplayText());
+         assertEquals(6.0, upn.getLastX());
 
-            assertEquals("0.0", upn.getDisplayText());
-            assertFalse(upn.hasError());
-            assertTrue(upn.getStack().isEmpty());
-         }
+         Stack<Double> stack = upn.getStack();
+         assertEquals(1, stack.size());
+         assertEquals(-6.0, stack.getX());
       }
 
-      /**
-       * Tests der Enter-Taste.
-       */
-      @Nested
-      @DisplayName("Enter")
-      class EnterTest
+      @Test
+      @DisplayName("Vorzeichenwechsel bei leerem Stack bleibt ohne Wirkung")
+      void testChangeSignEmptyStack() throws UserException
       {
-         @Test
-         @DisplayName("Eingabe 6 und Enter")
-         void testEnterFromInputMode() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.enter();
+         upn.changeSign();
 
-            assertFalse(upn.isInputMode());
-            assertNull(upn.getInputString());
-            assertEquals("6.0", upn.getDisplayText());
+         assertEquals("0.0", upn.getDisplayText());
+         assertFalse(upn.hasError());
+         assertTrue(upn.getStack().isEmpty());
+      }
+   }
 
-            Stack<Double> stack = upn.getStack();
-            assertEquals(1, stack.size());
-            assertEquals(6.0, stack.getX());
-         }
+   /**
+    * Tests der Enter-Taste.
+    */
+   @Nested
+   @DisplayName("Enter")
+   class EnterTest
+   {
+      @Test
+      @DisplayName("Eingabe 6 und Enter")
+      void testEnterFromInputMode() throws UserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
 
-         @Test
-         @DisplayName("Enter bei leerem Stack legt 0.0 auf den Stack")
-         void testEnterOnEmptyStack() throws UserException
-         {
-            upn.clear();
-            upn.enter();
+         assertFalse(upn.isInputMode());
+         assertNull(upn.getInputString());
+         assertEquals("6.0", upn.getDisplayText());
 
-            Stack<Double> stack = upn.getStack();
-            assertEquals(1, stack.size());
-            assertEquals(0.0, stack.getX());
-            assertEquals("0.0", upn.getDisplayText());
-         }
-
-         @Test
-         @DisplayName("Enter im Funktionsmodus dupliziert X")
-         void testEnterDuplicatesX() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.enter();
-            upn.enter();
-
-            Stack<Double> stack = upn.getStack();
-            assertEquals(2, stack.size());
-            assertEquals(6.0, stack.getX());
-            assertEquals("6.0", upn.getDisplayText());
-         }
+         Stack<Double> stack = upn.getStack();
+         assertEquals(1, stack.size());
+         assertEquals(6.0, stack.getX());
       }
 
-      /**
-       * Tests der CLR-Taste.
-       */
-      @Nested
-      @DisplayName("CLR")
-      class ClearTest
+      @Test
+      @DisplayName("Enter bei leerem Stack legt 0.0 auf den Stack")
+      void testEnterOnEmptyStack() throws UserException
       {
-         @Test
-         @DisplayName("CLR setzt den Rechner zurück")
-         void testClear() throws UserException
+         upn.clear();
+         upn.enter();
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(1, stack.size());
+         assertEquals(0.0, stack.getX());
+         assertEquals("0.0", upn.getDisplayText());
+      }
+
+      @Test
+      @DisplayName("Enter im Funktionsmodus dupliziert X")
+      void testEnterDuplicatesX() throws UserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.enter();
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(2, stack.size());
+         assertEquals(6.0, stack.getX());
+         assertEquals("6.0", upn.getDisplayText());
+      }
+   }
+
+   /**
+    * Tests der CLR-Taste.
+    */
+   @Nested
+   @DisplayName("CLR")
+   class ClearTest
+   {
+      @Test
+      @DisplayName("CLR setzt den Rechner zurück")
+      void testClear() throws UserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.changeSign();
+         upn.clear();
+
+         assertFalse(upn.isInputMode());
+         assertFalse(upn.hasError());
+         assertNull(upn.getInputString());
+         assertEquals(0.0, upn.getLastX());
+         assertEquals("0.0", upn.getDisplayText());
+         assertTrue(upn.getStack().isEmpty());
+      }
+
+      @Test
+      @DisplayName("CLR beendet Fehlerzustand")
+      void testClearAfterError()
+      {
+         final Operator operator = new DivOperator();
+
+         assertThrows(UserException.class, new Executable()
          {
-            upn.inputDigit(6);
-            upn.enter();
-            upn.changeSign();
-            upn.clear();
-
-            assertFalse(upn.isInputMode());
-            assertFalse(upn.hasError());
-            assertNull(upn.getInputString());
-            assertEquals(0.0, upn.getLastX());
-            assertEquals("0.0", upn.getDisplayText());
-            assertTrue(upn.getStack().isEmpty());
-         }
-
-         @Test
-         @DisplayName("CLR beendet Fehlerzustand")
-         void testClearAfterError()
-         {
-            final Operator operator = new DivOperator();
-
-            assertThrows(UserException.class, new Executable()
+            @Override
+            public void execute() throws Throwable
             {
-               @Override
-               public void execute() throws Throwable
-               {
-                  upn.inputDigit(6);
-                  upn.enter();
-                  upn.inputDigit(0);
-                  upn.applyOperator(operator);
-               }
-            });
+               upn.inputDigit(6);
+               upn.enter();
+               upn.inputDigit(0);
+               upn.applyOperator(operator);
+            }
+         });
 
-            upn.clear();
+         upn.clear();
 
-            assertFalse(upn.hasError());
-            assertEquals("0.0", upn.getDisplayText());
-         }
+         assertFalse(upn.hasError());
+         assertEquals("0.0", upn.getDisplayText());
+      }
+   }
+
+   /**
+    * Tests der CLX-Taste.
+    */
+   @Nested
+   @DisplayName("CLX")
+   class ClearXTest
+   {
+      @Test
+      @DisplayName("CLX löscht X")
+      void testClearX() throws UserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.clearX();
+
+         assertTrue(upn.getStack().isEmpty());
+         assertEquals("0.0", upn.getDisplayText());
       }
 
-      /**
-       * Tests der CLX-Taste.
-       */
-      @Nested
-      @DisplayName("CLX")
-      class ClearXTest
+      @Test
+      @DisplayName("CLX aus dem Eingabemodus")
+      void testClearXFromInputMode() throws UserException
       {
-         @Test
-         @DisplayName("CLX löscht X")
-         void testClearX() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.enter();
-            upn.clearX();
+         upn.inputDigit(6);
+         upn.clearX();
 
-            assertTrue(upn.getStack().isEmpty());
-            assertEquals("0.0", upn.getDisplayText());
-         }
-
-         @Test
-         @DisplayName("CLX aus dem Eingabemodus")
-         void testClearXFromInputMode() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.clearX();
-
-            assertFalse(upn.isInputMode());
-            assertNull(upn.getInputString());
-            assertTrue(upn.getStack().isEmpty());
-            assertEquals("0.0", upn.getDisplayText());
-         }
-
-         @Test
-         @DisplayName("CLX bei leerem Stack bleibt ohne Wirkung")
-         void testClearXOnEmptyStack() throws UserException
-         {
-            upn.clearX();
-
-            assertTrue(upn.getStack().isEmpty());
-            assertEquals("0.0", upn.getDisplayText());
-         }
+         assertFalse(upn.isInputMode());
+         assertNull(upn.getInputString());
+         assertTrue(upn.getStack().isEmpty());
+         assertEquals("0.0", upn.getDisplayText());
       }
 
-      /**
-       * Tests der LastX-Taste.
-       */
-      @Nested
-      @DisplayName("LastX")
-      class PushLastXTest
+      @Test
+      @DisplayName("CLX bei leerem Stack bleibt ohne Wirkung")
+      void testClearXOnEmptyStack() throws UserException
       {
-         @Test
-         @DisplayName("LastX mit Default-Wert 0.0")
-         void testPushDefaultLastX() throws UserException
-         {
-            upn.clear();
-            upn.pushLastX();
+         upn.clearX();
 
-            Stack<Double> stack = upn.getStack();
-            assertEquals(1, stack.size());
-            assertEquals(0.0, stack.getX());
-            assertEquals("0.0", upn.getDisplayText());
-         }
+         assertTrue(upn.getStack().isEmpty());
+         assertEquals("0.0", upn.getDisplayText());
+      }
+   }
 
-         @Test
-         @DisplayName("LastX nach changeSign")
-         void testPushSavedLastX() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.enter();
-            upn.changeSign();
-            upn.pushLastX();
+   /**
+    * Tests der LastX-Taste.
+    */
+   @Nested
+   @DisplayName("LastX")
+   class PushLastXTest
+   {
+      @Test
+      @DisplayName("LastX mit Default-Wert 0.0")
+      void testPushDefaultLastX() throws UserException
+      {
+         upn.clear();
+         upn.pushLastX();
 
-            Stack<Double> stack = upn.getStack();
-            assertEquals(2, stack.size());
-            assertEquals(6.0, stack.getX());
-         }
-
-         @Test
-         @DisplayName("LastX aus dem Eingabemodus")
-         void testPushLastXFromInputMode() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.pushLastX();
-
-            Stack<Double> stack = upn.getStack();
-            assertEquals(2, stack.size());
-            assertEquals(0.0, stack.getX());
-         }
+         Stack<Double> stack = upn.getStack();
+         assertEquals(1, stack.size());
+         assertEquals(0.0, stack.getX());
+         assertEquals("0.0", upn.getDisplayText());
       }
 
-      /**
-       * Tests der X<>Y-Taste.
-       */
-      @Nested
-      @DisplayName("X<>Y")
-      class SwapXYTest
+      @Test
+      @DisplayName("LastX nach changeSign")
+      void testPushSavedLastX() throws UserException
       {
-         @Test
-         @DisplayName("X und Y werden vertauscht")
-         void testSwapXY() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.enter();
-            upn.inputDigit(2);
-            upn.enter();
-            upn.swapXY();
+         upn.inputDigit(6);
+         upn.enter();
+         upn.changeSign();
+         upn.pushLastX();
 
-            Stack<Double> stack = upn.getStack();
-            assertEquals(6.0, stack.getX());
-            stack.pop();
-            assertEquals(2.0, stack.getX());
-         }
-
-         @Test
-         @DisplayName("X<>Y mit nur einem Element")
-         void testSwapXYWithOneElement() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.enter();
-            upn.swapXY();
-
-            Stack<Double> stack = upn.getStack();
-            assertEquals(1, stack.size());
-            assertEquals(6.0, stack.getX());
-         }
-
-         @Test
-         @DisplayName("X<>Y mit leerem Stack")
-         void testSwapXYOnEmptyStack() throws UserException
-         {
-            upn.swapXY();
-
-            assertTrue(upn.getStack().isEmpty());
-            assertEquals("0.0", upn.getDisplayText());
-         }
-
-         @Test
-         @DisplayName("X<>Y aus dem Eingabemodus")
-         void testSwapXYFromInputMode() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.enter();
-            upn.inputDigit(2);
-            upn.swapXY();
-
-            Stack<Double> stack = upn.getStack();
-            assertEquals(6.0, stack.getX());
-            stack.pop();
-            assertEquals(2.0, stack.getX());
-         }
+         Stack<Double> stack = upn.getStack();
+         assertEquals(2, stack.size());
+         assertEquals(6.0, stack.getX());
       }
 
-      /**
-       * Tests der Addition.
-       */
-      @Nested
-      @DisplayName("+")
-      class AddTest
+      @Test
+      @DisplayName("LastX aus dem Eingabemodus")
+      void testPushLastXFromInputMode() throws UserException
       {
-         private final Operator operator = new AddOperator();
+         upn.inputDigit(6);
+         upn.pushLastX();
 
-         @Test
-         @DisplayName("6 + 2 = 8")
-         void testAdd() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.enter();
-            upn.inputDigit(2);
-            upn.applyOperator(operator);
+         Stack<Double> stack = upn.getStack();
+         assertEquals(2, stack.size());
+         assertEquals(0.0, stack.getX());
+      }
+   }
 
-            assertEquals("8.0", upn.getDisplayText());
-            assertEquals(2.0, upn.getLastX());
-         }
+   /**
+    * Tests der X<>Y-Taste.
+    */
+   @Nested
+   @DisplayName("X<>Y")
+   class SwapXYTest
+   {
+      @Test
+      @DisplayName("X und Y werden vertauscht")
+      void testSwapXY() throws UserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.inputDigit(2);
+         upn.enter();
+         upn.swapXY();
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(6.0, stack.getX());
+         stack.pop();
+         assertEquals(2.0, stack.getX());
       }
 
-      /**
-       * Tests der Subtraktion.
-       */
-      @Nested
-      @DisplayName("-")
-      class SubTest
+      @Test
+      @DisplayName("X<>Y mit nur einem Element")
+      void testSwapXYWithOneElement() throws UserException
       {
-         private final Operator operator = new SubOperator();
+         upn.inputDigit(6);
+         upn.enter();
+         upn.swapXY();
 
-         @Test
-         @DisplayName("6 - 2 = 4")
-         void testSub() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.enter();
-            upn.inputDigit(2);
-            upn.applyOperator(operator);
-
-            assertEquals("4.0", upn.getDisplayText());
-         }
+         Stack<Double> stack = upn.getStack();
+         assertEquals(1, stack.size());
+         assertEquals(6.0, stack.getX());
       }
 
-      /**
-       * Tests der Multiplikation.
-       */
-      @Nested
-      @DisplayName("*")
-      class MulTest
+      @Test
+      @DisplayName("X<>Y mit leerem Stack")
+      void testSwapXYOnEmptyStack() throws UserException
       {
-         private final Operator operator = new MulOperator();
+         upn.swapXY();
 
-         @Test
-         @DisplayName("6 * 2 = 12")
-         void testMul() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.enter();
-            upn.inputDigit(2);
-            upn.applyOperator(operator);
-
-            assertEquals("12.0", upn.getDisplayText());
-         }
+         assertTrue(upn.getStack().isEmpty());
+         assertEquals("0.0", upn.getDisplayText());
       }
 
-      /**
-       * Tests der Division.
-       */
-      @Nested
-      @DisplayName("/")
-      class DivTest
+      @Test
+      @DisplayName("X<>Y aus dem Eingabemodus")
+      void testSwapXYFromInputMode() throws UserException
       {
-         private final Operator operator = new DivOperator();
+         upn.inputDigit(6);
+         upn.enter();
+         upn.inputDigit(2);
+         upn.swapXY();
 
-         @Test
-         @DisplayName("6 / 2 = 3")
-         void testOk() throws UserException
+         Stack<Double> stack = upn.getStack();
+         assertEquals(6.0, stack.getX());
+         stack.pop();
+         assertEquals(2.0, stack.getX());
+      }
+   }
+
+   /**
+    * Tests der Addition.
+    */
+   @Nested
+   @DisplayName("+")
+   class AddTest
+   {
+      private final Operator operator = new AddOperator();
+
+      @Test
+      @DisplayName("6 + 2 = 8")
+      void testAdd() throws UserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.inputDigit(2);
+         upn.applyOperator(operator);
+
+         assertEquals("8.0", upn.getDisplayText());
+         assertEquals(2.0, upn.getLastX());
+      }
+   }
+
+   /**
+    * Tests der Subtraktion.
+    */
+   @Nested
+   @DisplayName("-")
+   class SubTest
+   {
+      private final Operator operator = new SubOperator();
+
+      @Test
+      @DisplayName("6 - 2 = 4")
+      void testSub() throws UserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.inputDigit(2);
+         upn.applyOperator(operator);
+
+         assertEquals("4.0", upn.getDisplayText());
+      }
+   }
+
+   /**
+    * Tests der Multiplikation.
+    */
+   @Nested
+   @DisplayName("*")
+   class MulTest
+   {
+      private final Operator operator = new MulOperator();
+
+      @Test
+      @DisplayName("6 * 2 = 12")
+      void testMul() throws UserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.inputDigit(2);
+         upn.applyOperator(operator);
+
+         assertEquals("12.0", upn.getDisplayText());
+      }
+   }
+
+   /**
+    * Tests der Division.
+    */
+   @Nested
+   @DisplayName("/")
+   class DivTest
+   {
+      private final Operator operator = new DivOperator();
+
+      @Test
+      @DisplayName("6 / 2 = 3")
+      void testOk() throws UserException
+      {
+         upn.clear();
+         upn.inputDigit(6);
+         upn.enter();
+         upn.inputDigit(2);
+         upn.applyOperator(operator);
+
+         Stack<Double> stack = upn.getStack();
+         assertTrue(stack.size() > 0);
+         assertEquals(3.0, stack.getX());
+         assertEquals(2.0, upn.getLastX());
+      }
+
+      @Test
+      @DisplayName("6 / 0")
+      void testDiv0()
+      {
+         assertThrows(UserException.class, new Executable()
          {
-            upn.clear();
-            upn.inputDigit(6);
-            upn.enter();
-            upn.inputDigit(2);
-            upn.applyOperator(operator);
-
-            Stack<Double> stack = upn.getStack();
-            assertTrue(stack.size() > 0);
-            assertEquals(3.0, stack.getX());
-            assertEquals(2.0, upn.getLastX());
-         }
-
-         @Test
-         @DisplayName("6 / 0")
-         void testDiv0()
-         {
-            assertThrows(UserException.class, new Executable()
+            @Override
+            public void execute() throws Throwable
             {
-               @Override
-               public void execute() throws Throwable
-               {
-                  upn.clear();
-                  upn.inputDigit(6);
-                  upn.enter();
-                  upn.inputDigit(0);
-                  upn.applyOperator(operator);
-               }
-            });
-         }
+               upn.clear();
+               upn.inputDigit(6);
+               upn.enter();
+               upn.inputDigit(0);
+               upn.applyOperator(operator);
+            }
+         });
+      }
+   }
+
+   /**
+    * Tests des Kehrwerts.
+    */
+   @Nested
+   @DisplayName("1/X")
+   class ReciprocalTest
+   {
+      private final Operator operator = new ReciprocalOperator();
+
+      @Test
+      @DisplayName("Kehrwert von 2 ist 0.5")
+      void testReciprocal() throws UserException
+      {
+         upn.inputDigit(2);
+         upn.applyOperator(operator);
+
+         assertEquals("0.5", upn.getDisplayText());
+         assertEquals(2.0, upn.getLastX());
       }
 
-      /**
-       * Tests des Kehrwerts.
-       */
-      @Nested
-      @DisplayName("1/X")
-      class ReciprocalTest
+      @Test
+      @DisplayName("Kehrwert von 0 ist Fehler")
+      void testReciprocalZero()
       {
-         private final Operator operator = new ReciprocalOperator();
-
-         @Test
-         @DisplayName("Kehrwert von 2 ist 0.5")
-         void testReciprocal() throws UserException
+         assertThrows(UserException.class, new Executable()
          {
-            upn.inputDigit(2);
-            upn.applyOperator(operator);
-
-            assertEquals("0.5", upn.getDisplayText());
-            assertEquals(2.0, upn.getLastX());
-         }
-
-         @Test
-         @DisplayName("Kehrwert von 0 ist Fehler")
-         void testReciprocalZero()
-         {
-            assertThrows(UserException.class, new Executable()
+            @Override
+            public void execute() throws Throwable
             {
-               @Override
-               public void execute() throws Throwable
-               {
-                  upn.inputDigit(0);
-                  upn.applyOperator(operator);
-               }
-            });
-         }
+               upn.inputDigit(0);
+               upn.applyOperator(operator);
+            }
+         });
+      }
+   }
+
+   /**
+    * Tests der Potenzfunktion.
+    */
+   @Nested
+   @DisplayName("Y^X")
+   class PowerTest
+   {
+      private final Operator operator = new PowerOperator();
+
+      @Test
+      @DisplayName("2 ^ 3 = 8")
+      void testPower() throws UserException
+      {
+         upn.inputDigit(2);
+         upn.enter();
+         upn.inputDigit(3);
+         upn.applyOperator(operator);
+
+         assertEquals("8.0", upn.getDisplayText());
       }
 
-      /**
-       * Tests der Potenzfunktion.
-       */
-      @Nested
-      @DisplayName("Y^X")
-      class PowerTest
+      @Test
+      @DisplayName("0 ^ -1 ist Fehler")
+      void testPowerInvalid()
       {
-         private final Operator operator = new PowerOperator();
-
-         @Test
-         @DisplayName("2 ^ 3 = 8")
-         void testPower() throws UserException
+         assertThrows(UserException.class, new Executable()
          {
-            upn.inputDigit(2);
-            upn.enter();
-            upn.inputDigit(3);
-            upn.applyOperator(operator);
-
-            assertEquals("8.0", upn.getDisplayText());
-         }
-
-         @Test
-         @DisplayName("0 ^ -1 ist Fehler")
-         void testPowerInvalid()
-         {
-            assertThrows(UserException.class, new Executable()
+            @Override
+            public void execute() throws Throwable
             {
-               @Override
-               public void execute() throws Throwable
-               {
-                  upn.inputDigit(0);
-                  upn.enter();
-                  upn.inputDigit(1);
-                  upn.changeSign();
-                  upn.applyOperator(operator);
-               }
-            });
-         }
+               upn.inputDigit(0);
+               upn.enter();
+               upn.inputDigit(1);
+               upn.changeSign();
+               upn.applyOperator(operator);
+            }
+         });
+      }
+   }
+
+   /**
+    * Tests der Quadratwurzel.
+    */
+   @Nested
+   @DisplayName("SQR")
+   class SquareRootTest
+   {
+      private final Operator operator = new SquareRootOperator();
+
+      @Test
+      @DisplayName("Sqrt von 9 ist 3")
+      void testSquareRoot() throws UserException
+      {
+         upn.inputDigit(9);
+         upn.applyOperator(operator);
+
+         assertEquals("3.0", upn.getDisplayText());
       }
 
-      /**
-       * Tests der Quadratwurzel.
-       */
-      @Nested
-      @DisplayName("SQR")
-      class SquareRootTest
+      @Test
+      @DisplayName("Sqrt von -9 ist Fehler")
+      void testSquareRootNegative()
       {
-         private final Operator operator = new SquareRootOperator();
-
-         @Test
-         @DisplayName("Sqrt von 9 ist 3")
-         void testSquareRoot() throws UserException
+         assertThrows(UserException.class, new Executable()
          {
-            upn.inputDigit(9);
-            upn.applyOperator(operator);
-
-            assertEquals("3.0", upn.getDisplayText());
-         }
-
-         @Test
-         @DisplayName("Sqrt von -9 ist Fehler")
-         void testSquareRootNegative()
-         {
-            assertThrows(UserException.class, new Executable()
+            @Override
+            public void execute() throws Throwable
             {
-               @Override
-               public void execute() throws Throwable
-               {
-                  upn.inputDigit(9);
-                  upn.changeSign();
-                  upn.applyOperator(operator);
-               }
-            });
-         }
+               upn.inputDigit(9);
+               upn.changeSign();
+               upn.applyOperator(operator);
+            }
+         });
+      }
+   }
+
+   /**
+    * Tests des natürlichen Logarithmus.
+    */
+   @Nested
+   @DisplayName("LN")
+   class LnTest
+   {
+      private final Operator operator = new LnOperator();
+
+      @Test
+      @DisplayName("LN von 1 ist 0")
+      void testLn() throws UserException
+      {
+         upn.inputDigit(1);
+         upn.applyOperator(operator);
+
+         assertEquals("0.0", upn.getDisplayText());
       }
 
-      /**
-       * Tests des natürlichen Logarithmus.
-       */
-      @Nested
-      @DisplayName("LN")
-      class LnTest
+      @Test
+      @DisplayName("LN von 0 ist Fehler")
+      void testLnZero()
       {
-         private final Operator operator = new LnOperator();
-
-         @Test
-         @DisplayName("LN von 1 ist 0")
-         void testLn() throws UserException
+         assertThrows(UserException.class, new Executable()
          {
-            upn.inputDigit(1);
-            upn.applyOperator(operator);
-
-            assertEquals("0.0", upn.getDisplayText());
-         }
-
-         @Test
-         @DisplayName("LN von 0 ist Fehler")
-         void testLnZero()
-         {
-            assertThrows(UserException.class, new Executable()
+            @Override
+            public void execute() throws Throwable
             {
-               @Override
-               public void execute() throws Throwable
-               {
-                  upn.inputDigit(0);
-                  upn.applyOperator(operator);
-               }
-            });
-         }
+               upn.inputDigit(0);
+               upn.applyOperator(operator);
+            }
+         });
+      }
+   }
+
+   /**
+    * Tests des Sinus.
+    */
+   @Nested
+   @DisplayName("SIN")
+   class SinTest
+   {
+      private final Operator operator = new SinOperator();
+
+      @Test
+      @DisplayName("SIN von 0 ist 0")
+      void testSin() throws UserException
+      {
+         upn.inputDigit(0);
+         upn.applyOperator(operator);
+
+         assertEquals("0.0", upn.getDisplayText());
+      }
+   }
+
+   /**
+    * Tests des Kosinus.
+    */
+   @Nested
+   @DisplayName("COS")
+   class CosTest
+   {
+      private final Operator operator = new CosOperator();
+
+      @Test
+      @DisplayName("COS von 0 ist 1")
+      void testCos() throws UserException
+      {
+         upn.inputDigit(0);
+         upn.applyOperator(operator);
+
+         assertEquals("1.0", upn.getDisplayText());
+      }
+   }
+
+   /**
+    * Tests des Tangens.
+    */
+   @Nested
+   @DisplayName("TAN")
+   class TanTest
+   {
+      private final Operator operator = new TanOperator();
+
+      @Test
+      @DisplayName("TAN von 0 ist 0")
+      void testTan() throws UserException
+      {
+         upn.inputDigit(0);
+         upn.applyOperator(operator);
+
+         assertEquals("0.0", upn.getDisplayText());
+      }
+   }
+
+   /**
+    * Tests des Fehlerverhaltens.
+    */
+   @Nested
+   @DisplayName("Fehlerverhalten")
+   class ErrorHandlingTest
+   {
+      private final Operator operator = new DivOperator();
+
+      @Test
+      @DisplayName("Display zeigt Err nach Division durch 0")
+      void testDisplayErrAfterError()
+      {
+         assertThrows(UserException.class, new Executable()
+         {
+            @Override
+            public void execute() throws Throwable
+            {
+               upn.inputDigit(6);
+               upn.enter();
+               upn.inputDigit(0);
+               upn.applyOperator(operator);
+            }
+         });
+
+         assertTrue(upn.hasError());
+         assertEquals("Err", upn.getDisplayText());
       }
 
-      /**
-       * Tests des Sinus.
-       */
-      @Nested
-      @DisplayName("SIN")
-      class SinTest
+      @Test
+      @DisplayName("Naechster Tastendruck beendet Fehlerzustand")
+      void testNextKeyClearsErrorState()
       {
-         private final Operator operator = new SinOperator();
-
-         @Test
-         @DisplayName("SIN von 0 ist 0")
-         void testSin() throws UserException
+         assertThrows(UserException.class, new Executable()
          {
-            upn.inputDigit(0);
-            upn.applyOperator(operator);
+            @Override
+            public void execute() throws Throwable
+            {
+               upn.inputDigit(6);
+               upn.enter();
+               upn.inputDigit(0);
+               upn.applyOperator(operator);
+            }
+         });
 
-            assertEquals("0.0", upn.getDisplayText());
-         }
+         upn.inputDigit(5);
+
+         assertFalse(upn.hasError());
+         assertTrue(upn.isInputMode());
+         assertEquals("5", upn.getInputString());
+         assertEquals("5", upn.getDisplayText());
       }
 
-      /**
-       * Tests des Kosinus.
-       */
-      @Nested
-      @DisplayName("COS")
-      class CosTest
+      @Test
+      @DisplayName("Dezimalpunkt beendet Fehlerzustand")
+      void testDecimalPointClearsErrorState()
       {
-         private final Operator operator = new CosOperator();
-
-         @Test
-         @DisplayName("COS von 0 ist 1")
-         void testCos() throws UserException
+         assertThrows(UserException.class, new Executable()
          {
-            upn.inputDigit(0);
-            upn.applyOperator(operator);
+            @Override
+            public void execute() throws Throwable
+            {
+               upn.inputDigit(6);
+               upn.enter();
+               upn.inputDigit(0);
+               upn.applyOperator(operator);
+            }
+         });
 
-            assertEquals("1.0", upn.getDisplayText());
-         }
+         upn.inputDecimalPoint();
+
+         assertFalse(upn.hasError());
+         assertTrue(upn.isInputMode());
+         assertEquals("0.", upn.getInputString());
+         assertEquals("0.", upn.getDisplayText());
       }
 
-      /**
-       * Tests des Tangens.
-       */
-      @Nested
-      @DisplayName("TAN")
-      class TanTest
+      @Test
+      @DisplayName("Stack bleibt bei Fehler unveraendert")
+      void testStackUnchangedOnError() throws UserException
       {
-         private final Operator operator = new TanOperator();
+         upn.inputDigit(8);
+         upn.enter();
 
-         @Test
-         @DisplayName("TAN von 0 ist 0")
-         void testTan() throws UserException
+         Stack<Double> stackBefore = upn.getStack();
+
+         assertThrows(UserException.class, new Executable()
          {
-            upn.inputDigit(0);
-            upn.applyOperator(operator);
+            @Override
+            public void execute() throws Throwable
+            {
+               upn.inputDigit(0);
+               upn.applyOperator(operator);
+            }
+         });
 
-            assertEquals("0.0", upn.getDisplayText());
-         }
+         Stack<Double> stackAfter = upn.getStack();
+
+         assertEquals(stackBefore.size(), stackAfter.size());
+         assertEquals(stackBefore.getX(), stackAfter.getX());
       }
 
-      /**
-       * Tests des Fehlerverhaltens.
-       */
-      @Nested
-      @DisplayName("Fehlerverhalten")
-      class ErrorHandlingTest
+      @Test
+      @DisplayName("LastX bleibt bei Fehler unveraendert")
+      void testLastXUnchangedOnError() throws UserException
       {
-         private final Operator operator = new DivOperator();
+         upn.inputDigit(6);
+         upn.enter();
+         upn.changeSign();
 
-         @Test
-         @DisplayName("Display zeigt Err nach Division durch 0")
-         void testDisplayErrAfterError()
+         double lastXBefore = upn.getLastX();
+
+         assertThrows(UserException.class, new Executable()
          {
-            assertThrows(UserException.class, new Executable()
+            @Override
+            public void execute() throws Throwable
             {
-               @Override
-               public void execute() throws Throwable
-               {
-                  upn.inputDigit(6);
-                  upn.enter();
-                  upn.inputDigit(0);
-                  upn.applyOperator(operator);
-               }
-            });
+               upn.inputDigit(0);
+               upn.applyOperator(operator);
+            }
+         });
 
-            assertTrue(upn.hasError());
-            assertEquals("Err", upn.getDisplayText());
-         }
+         assertEquals(lastXBefore, upn.getLastX());
+      }
 
-         @Test
-         @DisplayName("Naechster Tastendruck beendet Fehlerzustand")
-         void testNextKeyClearsErrorState()
+      @Test
+      @DisplayName("Division mit zu wenigen Operanden")
+      void testTooFewOperands()
+      {
+         assertThrows(UserException.class, new Executable()
          {
-            assertThrows(UserException.class, new Executable()
+            @Override
+            public void execute() throws Throwable
             {
-               @Override
-               public void execute() throws Throwable
-               {
-                  upn.inputDigit(6);
-                  upn.enter();
-                  upn.inputDigit(0);
-                  upn.applyOperator(operator);
-               }
-            });
+               upn.inputDigit(6);
+               upn.applyOperator(operator);
+            }
+         });
 
-            upn.inputDigit(5);
+         assertTrue(upn.hasError());
+         assertEquals("Err", upn.getDisplayText());
+      }
 
-            assertFalse(upn.hasError());
-            assertTrue(upn.isInputMode());
-            assertEquals("5", upn.getInputString());
-            assertEquals("5", upn.getDisplayText());
-         }
-
-         @Test
-         @DisplayName("Dezimalpunkt beendet Fehlerzustand")
-         void testDecimalPointClearsErrorState()
+      @Test
+      @DisplayName("applyOperator mit null")
+      void testApplyOperatorNull()
+      {
+         assertThrows(IllegalArgumentException.class, new Executable()
          {
-            assertThrows(UserException.class, new Executable()
+            @Override
+            public void execute() throws Throwable
             {
-               @Override
-               public void execute() throws Throwable
-               {
-                  upn.inputDigit(6);
-                  upn.enter();
-                  upn.inputDigit(0);
-                  upn.applyOperator(operator);
-               }
-            });
-
-            upn.inputDecimalPoint();
-
-            assertFalse(upn.hasError());
-            assertTrue(upn.isInputMode());
-            assertEquals("0.", upn.getInputString());
-            assertEquals("0.", upn.getDisplayText());
-         }
-
-         @Test
-         @DisplayName("Stack bleibt bei Fehler unveraendert")
-         void testStackUnchangedOnError() throws UserException
-         {
-            upn.inputDigit(8);
-            upn.enter();
-
-            Stack<Double> stackBefore = upn.getStack();
-
-            assertThrows(UserException.class, new Executable()
-            {
-               @Override
-               public void execute() throws Throwable
-               {
-                  upn.inputDigit(0);
-                  upn.applyOperator(operator);
-               }
-            });
-
-            Stack<Double> stackAfter = upn.getStack();
-
-            assertEquals(stackBefore.size(), stackAfter.size());
-            assertEquals(stackBefore.getX(), stackAfter.getX());
-         }
-
-         @Test
-         @DisplayName("LastX bleibt bei Fehler unveraendert")
-         void testLastXUnchangedOnError() throws UserException
-         {
-            upn.inputDigit(6);
-            upn.enter();
-            upn.changeSign();
-
-            double lastXBefore = upn.getLastX();
-
-            assertThrows(UserException.class, new Executable()
-            {
-               @Override
-               public void execute() throws Throwable
-               {
-                  upn.inputDigit(0);
-                  upn.applyOperator(operator);
-               }
-            });
-
-            assertEquals(lastXBefore, upn.getLastX());
-         }
-
-         @Test
-         @DisplayName("Division mit zu wenigen Operanden")
-         void testTooFewOperands()
-         {
-            assertThrows(UserException.class, new Executable()
-            {
-               @Override
-               public void execute() throws Throwable
-               {
-                  upn.inputDigit(6);
-                  upn.applyOperator(operator);
-               }
-            });
-
-            assertTrue(upn.hasError());
-            assertEquals("Err", upn.getDisplayText());
-         }
-
-         @Test
-         @DisplayName("applyOperator mit null")
-         void testApplyOperatorNull()
-         {
-            assertThrows(IllegalArgumentException.class, new Executable()
-            {
-               @Override
-               public void execute() throws Throwable
-               {
-                  upn.applyOperator(null);
-               }
-            });
-         }
+               upn.applyOperator(null);
+            }
+         });
       }
    }
 }

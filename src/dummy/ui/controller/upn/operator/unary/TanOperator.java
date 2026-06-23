@@ -1,4 +1,4 @@
-package dummy.controller.upn.operator.unary;
+package dummy.ui.controller.upn.operator.unary;
 
 import common.exception.IllegalUserInputException;
 import common.exception.UserException;
@@ -6,11 +6,11 @@ import controller.upn.operator.Operator;
 import model.Stack;
 
 /**
- * Dummy-Implementierung des Sinusoperators.
+ * Dummy-Implementierung des Tangensoperators.
  *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */
-public class SinOperator implements Operator
+public class TanOperator implements Operator
 {
    @Override
    public void calculate(Stack<Double> stack) throws UserException
@@ -27,7 +27,7 @@ public class SinOperator implements Operator
       }
 
       double x = stack.pop();
-      double result = Math.sin(x);
+      double result = Math.tan(x);
 
       if (Double.isNaN(result) || Double.isInfinite(result))
       {

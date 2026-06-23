@@ -1,6 +1,6 @@
 package application;
 
-import dummy.controller.upn.DefaultUPNCore;
+import dummy.ui.controller.upn.DefaultUPNCore;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
