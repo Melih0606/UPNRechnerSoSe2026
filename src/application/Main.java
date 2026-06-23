@@ -14,17 +14,17 @@ import view.CalculatorPane;
 public class Main extends Application {
 
     /**
-     * Fenstertitel.
+     * Fenstertitel der Anwendung.
      */
     private static final String WINDOW_TITLE = "UPN-Rechner - Aufgabe 6c";
 
     /**
-     * Fensterbreite.
+     * Breite des Hauptfensters.
      */
     private static final int WINDOW_WIDTH = 380;
 
     /**
-     * Fensterhöhe.
+     * Höhe des Hauptfensters.
      */
     private static final int WINDOW_HEIGHT = 520;
 
