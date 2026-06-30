@@ -6,7 +6,7 @@ import controller.upn.operator.Operator;
 import model.Stack;
 
 /**
- * Dummy-Implementierung des Subtraktionsoperators.
+ * Implementierung des Subtraktionsoperators.
  *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */

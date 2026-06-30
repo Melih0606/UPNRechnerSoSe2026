@@ -6,7 +6,7 @@ import controller.upn.operator.Operator;
 import model.Stack;
 
 /**
- * Dummy-Implementierung des Kehrwertoperators.
+ * Implementierung des Kehrwertoperators.
  *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */
@@ -30,7 +30,8 @@ public class ReciprocalOperator implements Operator
 
       if (x == 0.0)
       {
-         throw new IllegalUserInputException("Division durch 0 ist nicht erlaubt.");
+         throw new IllegalUserInputException(
+               "Division durch 0 ist nicht erlaubt.");
       }
 
       double result = 1.0 / x;

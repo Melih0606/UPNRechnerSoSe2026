@@ -6,7 +6,7 @@ import controller.upn.operator.Operator;
 import model.Stack;
 
 /**
- * Dummy-Implementierung des Wurzeloperators.
+ * Implementierung des Wurzeloperators.
  *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */

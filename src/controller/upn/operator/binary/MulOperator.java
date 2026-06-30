@@ -6,7 +6,7 @@ import controller.upn.operator.Operator;
 import model.Stack;
 
 /**
- * Dummy-Implementierung des Multiplikationsoperators.
+ * Implementierung des Multiplikationsoperators.
  *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */

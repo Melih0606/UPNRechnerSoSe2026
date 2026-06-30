@@ -7,11 +7,11 @@ import controller.upn.operator.Operator;
 import model.Stack;
 
 /**
- * Dummy-Implementierung des UPN-Rechenkerns.
+ * Default-Implementierung des UPN-Rechenkerns.
  *
  * <p>
- * Diese Klasse dient dazu, Tests bereits vor der spaeteren echten
- * Implementierung des Rechenkerns kompilieren und ausfuehren zu koennen.
+ * Diese Klasse implementiert das Verhalten des UPN-Rechners mit Eingabezeile,
+ * Stack, LastX-Register, Betriebsmodus und Fehlerzustand.
  * </p>
  *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
