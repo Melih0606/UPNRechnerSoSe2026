@@ -1,4 +1,4 @@
-package dummy.ui.controller.upn.operator.unary;
+package controller.upn.operator.unary;
 
 import common.exception.IllegalUserInputException;
 import common.exception.UserException;
@@ -6,11 +6,11 @@ import controller.upn.operator.Operator;
 import model.Stack;
 
 /**
- * Dummy-Implementierung des Sinusoperators.
+ * Dummy-Implementierung des Wurzeloperators.
  *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */
-public class SinOperator implements Operator
+public class SquareRootOperator implements Operator
 {
    @Override
    public void calculate(Stack<Double> stack) throws UserException
@@ -27,7 +27,14 @@ public class SinOperator implements Operator
       }
 
       double x = stack.pop();
-      double result = Math.sin(x);
+
+      if (x < 0.0)
+      {
+         throw new IllegalUserInputException(
+               "Quadratwurzel aus negativem Wert ist nicht erlaubt.");
+      }
+
+      double result = Math.sqrt(x);
 
       if (Double.isNaN(result) || Double.isInfinite(result))
       {

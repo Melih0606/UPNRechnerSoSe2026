@@ -1,4 +1,4 @@
-package dummy.ui.controller.upn.operator.binary;
+package controller.upn.operator.binary;
 
 import common.exception.IllegalUserInputException;
 import common.exception.UserException;
@@ -6,11 +6,11 @@ import controller.upn.operator.Operator;
 import model.Stack;
 
 /**
- * Dummy-Implementierung des Multiplikationsoperators.
+ * Dummy-Implementierung des Additionsoperators.
  *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */
-public class MulOperator implements Operator
+public class AddOperator implements Operator
 {
    @Override
    public void calculate(Stack<Double> stack) throws UserException
@@ -28,7 +28,7 @@ public class MulOperator implements Operator
 
       double x = stack.pop();
       double y = stack.pop();
-      double result = y * x;
+      double result = y + x;
 
       if (Double.isNaN(result) || Double.isInfinite(result))
       {

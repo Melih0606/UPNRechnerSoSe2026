@@ -1,4 +1,4 @@
-package dummy.ui.controller.upn.operator.unary;
+package controller.upn.operator.unary;
 
 import common.exception.IllegalUserInputException;
 import common.exception.UserException;
@@ -6,11 +6,11 @@ import controller.upn.operator.Operator;
 import model.Stack;
 
 /**
- * Dummy-Implementierung des Kosinusoperators.
+ * Dummy-Implementierung des Sinusoperators.
  *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */
-public class CosOperator implements Operator
+public class SinOperator implements Operator
 {
    @Override
    public void calculate(Stack<Double> stack) throws UserException
@@ -27,7 +27,7 @@ public class CosOperator implements Operator
       }
 
       double x = stack.pop();
-      double result = Math.cos(x);
+      double result = Math.sin(x);
 
       if (Double.isNaN(result) || Double.isInfinite(result))
       {

@@ -14,18 +14,18 @@ import org.junit.jupiter.api.function.Executable;
 
 import common.exception.UserException;
 import controller.upn.operator.Operator;
-import dummy.ui.controller.upn.DefaultUPNCore;
-import dummy.ui.controller.upn.operator.binary.AddOperator;
-import dummy.ui.controller.upn.operator.binary.DivOperator;
-import dummy.ui.controller.upn.operator.binary.MulOperator;
-import dummy.ui.controller.upn.operator.binary.PowerOperator;
-import dummy.ui.controller.upn.operator.binary.SubOperator;
-import dummy.ui.controller.upn.operator.unary.CosOperator;
-import dummy.ui.controller.upn.operator.unary.LnOperator;
-import dummy.ui.controller.upn.operator.unary.ReciprocalOperator;
-import dummy.ui.controller.upn.operator.unary.SinOperator;
-import dummy.ui.controller.upn.operator.unary.SquareRootOperator;
-import dummy.ui.controller.upn.operator.unary.TanOperator;
+import controller.upn.DefaultUPNCore;
+import controller.upn.operator.binary.AddOperator;
+import controller.upn.operator.binary.DivOperator;
+import controller.upn.operator.binary.MulOperator;
+import controller.upn.operator.binary.PowerOperator;
+import controller.upn.operator.binary.SubOperator;
+import controller.upn.operator.unary.CosOperator;
+import controller.upn.operator.unary.LnOperator;
+import controller.upn.operator.unary.ReciprocalOperator;
+import controller.upn.operator.unary.SinOperator;
+import controller.upn.operator.unary.SquareRootOperator;
+import controller.upn.operator.unary.TanOperator;
 import model.Stack;
 
 /**
@@ -271,6 +271,29 @@ class UPNCoreTest
       }
 
       @Test
+      @DisplayName("Vorzeichenwechsel beendet Fehlerzustand")
+      void testChangeSignClearsErrorState() throws UserException
+      {
+         final Operator operator = new DivOperator();
+
+         try
+         {
+            upn.inputDigit(6);
+            upn.enter();
+            upn.inputDigit(0);
+            upn.applyOperator(operator);
+         }
+         catch (UserException e)
+         {
+            upn.changeSign();
+         }
+
+         assertFalse(upn.hasError());
+         assertEquals("-6.0", upn.getDisplayText());
+         assertEquals(6.0, upn.getLastX());
+      }
+
+      @Test
       @DisplayName("Vorzeichenwechsel bei leerem Stack bleibt ohne Wirkung")
       void testChangeSignEmptyStack() throws UserException
       {
@@ -331,6 +354,32 @@ class UPNCoreTest
          assertEquals(6.0, stack.getX());
          assertEquals("6.0", upn.getDisplayText());
       }
+
+      @Test
+      @DisplayName("Enter beendet Fehlerzustand")
+      void testEnterClearsErrorState() throws UserException
+      {
+         final Operator operator = new DivOperator();
+
+         try
+         {
+            upn.inputDigit(6);
+            upn.enter();
+            upn.inputDigit(0);
+            upn.applyOperator(operator);
+         }
+         catch (UserException e)
+         {
+            upn.enter();
+         }
+
+         assertFalse(upn.hasError());
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(2, stack.size());
+         assertEquals(6.0, stack.getX());
+         assertEquals("6.0", upn.getDisplayText());
+      }
    }
 
    /**
@@ -380,6 +429,19 @@ class UPNCoreTest
          assertFalse(upn.hasError());
          assertEquals("0.0", upn.getDisplayText());
       }
+
+      @Test
+      @DisplayName("CLR verwirft aktive Eingabe")
+      void testClearFromInputMode()
+      {
+         upn.inputDigit(6);
+         upn.clear();
+
+         assertFalse(upn.isInputMode());
+         assertNull(upn.getInputString());
+         assertTrue(upn.getStack().isEmpty());
+         assertEquals("0.0", upn.getDisplayText());
+      }
    }
 
    /**
@@ -420,6 +482,45 @@ class UPNCoreTest
       {
          upn.clearX();
 
+         assertTrue(upn.getStack().isEmpty());
+         assertEquals("0.0", upn.getDisplayText());
+      }
+
+      @Test
+      @DisplayName("CLX mit zwei Elementen zeigt Y")
+      void testClearXWithTwoElements() throws UserException
+      {
+         upn.inputDigit(6);
+         upn.enter();
+         upn.inputDigit(2);
+         upn.enter();
+         upn.clearX();
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(1, stack.size());
+         assertEquals(6.0, stack.getX());
+         assertEquals("6.0", upn.getDisplayText());
+      }
+
+      @Test
+      @DisplayName("CLX beendet Fehlerzustand")
+      void testClearXClearsErrorState() throws UserException
+      {
+         final Operator operator = new DivOperator();
+
+         try
+         {
+            upn.inputDigit(6);
+            upn.enter();
+            upn.inputDigit(0);
+            upn.applyOperator(operator);
+         }
+         catch (UserException e)
+         {
+            upn.clearX();
+         }
+
+         assertFalse(upn.hasError());
          assertTrue(upn.getStack().isEmpty());
          assertEquals("0.0", upn.getDisplayText());
       }
@@ -469,6 +570,32 @@ class UPNCoreTest
          Stack<Double> stack = upn.getStack();
          assertEquals(2, stack.size());
          assertEquals(0.0, stack.getX());
+      }
+
+      @Test
+      @DisplayName("LastX beendet Fehlerzustand")
+      void testPushLastXClearsErrorState() throws UserException
+      {
+         final Operator operator = new DivOperator();
+
+         try
+         {
+            upn.inputDigit(6);
+            upn.enter();
+            upn.changeSign();
+            upn.inputDigit(0);
+            upn.applyOperator(operator);
+         }
+         catch (UserException e)
+         {
+            upn.pushLastX();
+         }
+
+         assertFalse(upn.hasError());
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(2, stack.size());
+         assertEquals(6.0, stack.getX());
       }
    }
 
@@ -526,6 +653,34 @@ class UPNCoreTest
          upn.enter();
          upn.inputDigit(2);
          upn.swapXY();
+
+         Stack<Double> stack = upn.getStack();
+         assertEquals(6.0, stack.getX());
+         stack.pop();
+         assertEquals(2.0, stack.getX());
+      }
+
+      @Test
+      @DisplayName("X<>Y beendet Fehlerzustand")
+      void testSwapXYClearsErrorState() throws UserException
+      {
+         final Operator operator = new DivOperator();
+
+         try
+         {
+            upn.inputDigit(6);
+            upn.enter();
+            upn.inputDigit(2);
+            upn.enter();
+            upn.inputDigit(0);
+            upn.applyOperator(operator);
+         }
+         catch (UserException e)
+         {
+            upn.swapXY();
+         }
+
+         assertFalse(upn.hasError());
 
          Stack<Double> stack = upn.getStack();
          assertEquals(6.0, stack.getX());
@@ -679,6 +834,18 @@ class UPNCoreTest
             }
          });
       }
+
+      @Test
+      @DisplayName("Kehrwert von -2 ist -0.5")
+      void testReciprocalNegative() throws UserException
+      {
+         upn.inputDigit(2);
+         upn.changeSign();
+         upn.applyOperator(operator);
+
+         assertEquals("-0.5", upn.getDisplayText());
+         assertEquals(-2.0, upn.getLastX());
+      }
    }
 
    /**
@@ -789,6 +956,25 @@ class UPNCoreTest
                upn.applyOperator(operator);
             }
          });
+      }
+
+      @Test
+      @DisplayName("LN von -1 ist Fehler")
+      void testLnNegative()
+      {
+         assertThrows(UserException.class, new Executable()
+         {
+            @Override
+            public void execute() throws Throwable
+            {
+               upn.inputDigit(1);
+               upn.changeSign();
+               upn.applyOperator(operator);
+            }
+         });
+
+         assertTrue(upn.hasError());
+         assertEquals("Err", upn.getDisplayText());
       }
    }
 

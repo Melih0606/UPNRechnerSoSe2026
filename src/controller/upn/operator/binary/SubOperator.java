@@ -1,4 +1,4 @@
-package dummy.ui.controller.upn.operator.binary;
+package controller.upn.operator.binary;
 
 import common.exception.IllegalUserInputException;
 import common.exception.UserException;
@@ -6,11 +6,11 @@ import controller.upn.operator.Operator;
 import model.Stack;
 
 /**
- * Dummy-Implementierung des Divisionsoperators.
+ * Dummy-Implementierung des Subtraktionsoperators.
  *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */
-public class DivOperator implements Operator
+public class SubOperator implements Operator
 {
    @Override
    public void calculate(Stack<Double> stack) throws UserException
@@ -28,14 +28,7 @@ public class DivOperator implements Operator
 
       double x = stack.pop();
       double y = stack.pop();
-
-      if (x == 0.0)
-      {
-         throw new IllegalUserInputException(
-               "Division durch 0 ist nicht erlaubt.");
-      }
-
-      double result = y / x;
+      double result = y - x;
 
       if (Double.isNaN(result) || Double.isInfinite(result))
       {

@@ -1,6 +1,6 @@
 package application;
 
-import dummy.ui.controller.upn.DefaultUPNCore;
+import controller.upn.DefaultUPNCore;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -16,7 +16,7 @@ public class Main extends Application {
     /**
      * Fenstertitel der Anwendung.
      */
-    private static final String WINDOW_TITLE = "UPN-Rechner - Aufgabe 6c";
+    private static final String WINDOW_TITLE = "UPN-Rechner - Aufgabe 6d";
 
     /**
      * Breite des Hauptfensters.

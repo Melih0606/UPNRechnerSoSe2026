@@ -1,4 +1,4 @@
-package dummy.ui.controller.upn.operator.unary;
+package controller.upn.operator.unary;
 
 import common.exception.IllegalUserInputException;
 import common.exception.UserException;
@@ -6,11 +6,11 @@ import controller.upn.operator.Operator;
 import model.Stack;
 
 /**
- * Dummy-Implementierung des Kehrwertoperators.
+ * Dummy-Implementierung des Logarithmusoperators.
  *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */
-public class ReciprocalOperator implements Operator
+public class LnOperator implements Operator
 {
    @Override
    public void calculate(Stack<Double> stack) throws UserException
@@ -28,12 +28,13 @@ public class ReciprocalOperator implements Operator
 
       double x = stack.pop();
 
-      if (x == 0.0)
+      if (x <= 0.0)
       {
-         throw new IllegalUserInputException("Division durch 0 ist nicht erlaubt.");
+         throw new IllegalUserInputException(
+               "Der Logarithmus ist nur fuer positive Werte definiert.");
       }
 
-      double result = 1.0 / x;
+      double result = Math.log(x);
 
       if (Double.isNaN(result) || Double.isInfinite(result))
       {

@@ -1,4 +1,4 @@
-package dummy.ui.controller.upn.operator.unary;
+package controller.upn.operator.binary;
 
 import common.exception.IllegalUserInputException;
 import common.exception.UserException;
@@ -6,11 +6,11 @@ import controller.upn.operator.Operator;
 import model.Stack;
 
 /**
- * Dummy-Implementierung des Tangensoperators.
+ * Dummy-Implementierung des Divisionsoperators.
  *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */
-public class TanOperator implements Operator
+public class DivOperator implements Operator
 {
    @Override
    public void calculate(Stack<Double> stack) throws UserException
@@ -21,13 +21,21 @@ public class TanOperator implements Operator
                "Der Stack darf nicht null sein.");
       }
 
-      if (stack.isEmpty())
+      if (stack.size() < 2)
       {
          throw new IllegalUserInputException("Zu wenige Operanden.");
       }
 
       double x = stack.pop();
-      double result = Math.tan(x);
+      double y = stack.pop();
+
+      if (x == 0.0)
+      {
+         throw new IllegalUserInputException(
+               "Division durch 0 ist nicht erlaubt.");
+      }
+
+      double result = y / x;
 
       if (Double.isNaN(result) || Double.isInfinite(result))
       {
