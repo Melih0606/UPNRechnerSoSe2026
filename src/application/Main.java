@@ -7,50 +7,58 @@ import javafx.stage.Stage;
 import view.CalculatorPane;
 
 /**
- * Startet die JavaFX-Anwendung für Aufgabe 6c.
+ * Startet die JavaFX-Anwendung für Aufgabe 7.
+ *
+ * <p>
+ * Die Anwendung erzeugt den echten UPN-Rechenkern und übergibt ihn an die
+ * JavaFX-Oberfläche. Die Oberfläche arbeitet dadurch gegen das Interface des
+ * Rechenkerns und enthält keine eigene Rechenlogik.
+ * </p>
  *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */
-public class Main extends Application {
+public class Main extends Application
+{
+   /**
+    * Fenstertitel der Anwendung.
+    */
+   private static final String WINDOW_TITLE = "UPN-Rechner - Aufgabe 7";
 
-    /**
-     * Fenstertitel der Anwendung.
-     */
-    private static final String WINDOW_TITLE = "UPN-Rechner - Aufgabe 6d";
+   /**
+    * Breite des Hauptfensters.
+    */
+   private static final int WINDOW_WIDTH = 380;
 
-    /**
-     * Breite des Hauptfensters.
-     */
-    private static final int WINDOW_WIDTH = 380;
+   /**
+    * Höhe des Hauptfensters.
+    */
+   private static final int WINDOW_HEIGHT = 520;
 
-    /**
-     * Höhe des Hauptfensters.
-     */
-    private static final int WINDOW_HEIGHT = 520;
+   /**
+    * Einstiegspunkt der Anwendung.
+    *
+    * @param args
+    *           Kommandozeilenargumente
+    */
+   public static void main(String[] args)
+   {
+      launch(args);
+   }
 
-    /**
-     * Einstiegspunkt der Anwendung.
-     *
-     * @param args
-     *            Kommandozeilenargumente
-     */
-    public static void main(String[] args) {
-        launch(args);
-    }
+   /**
+    * Erzeugt und zeigt das Hauptfenster an.
+    *
+    * @param primaryStage
+    *           Hauptfenster der Anwendung
+    */
+   @Override
+   public void start(Stage primaryStage)
+   {
+      CalculatorPane root = new CalculatorPane(new DefaultUPNCore());
+      Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    /**
-     * Erzeugt und zeigt das Hauptfenster an.
-     *
-     * @param primaryStage
-     *            Hauptfenster der Anwendung
-     */
-    @Override
-    public void start(Stage primaryStage) {
-        CalculatorPane root = new CalculatorPane(new DefaultUPNCore());
-        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-        primaryStage.setTitle(WINDOW_TITLE);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
+      primaryStage.setTitle(WINDOW_TITLE);
+      primaryStage.setScene(scene);
+      primaryStage.show();
+   }
 }

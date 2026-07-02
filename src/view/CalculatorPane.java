@@ -34,6 +34,12 @@ import javafx.scene.layout.GridPane;
  * in der Oberfläche angezeigt.
  * </p>
  *
+ * <p>
+ * Für Aufgabe 7 besitzen alle wichtigen grafischen Komponenten eindeutige
+ * JavaFX-Ids. Dadurch können sie in TestFX-Tests zuverlässig angesprochen
+ * werden.
+ * </p>
+ *
  * @author Melih Acar, Kevin Piotrowski und Dmitrij Ogulev
  */
 public class CalculatorPane extends BorderPane
@@ -332,22 +338,19 @@ public class CalculatorPane extends BorderPane
     * CSS-Style der Anzeige.
     */
    private static final String DISPLAY_STYLE = "-fx-border-color: black; "
-         + "-fx-font-size: 24px; "
-         + "-fx-padding: 8px;";
+         + "-fx-font-size: 24px; " + "-fx-padding: 8px;";
 
    /**
     * CSS-Style der normalen Statuszeile.
     */
    private static final String STATUS_STYLE_NORMAL = "-fx-font-size: 12px; "
-         + "-fx-padding: 5px; "
-         + "-fx-text-fill: black;";
+         + "-fx-padding: 5px; " + "-fx-text-fill: black;";
 
    /**
     * CSS-Style der Statuszeile im Fehlerfall.
     */
    private static final String STATUS_STYLE_ERROR = "-fx-font-size: 12px; "
-         + "-fx-padding: 5px; "
-         + "-fx-text-fill: red;";
+         + "-fx-padding: 5px; " + "-fx-text-fill: red;";
 
    /**
     * Präfix der Stack-Anzeige.
@@ -376,6 +379,111 @@ public class CalculatorPane extends BorderPane
    private static final String DISPLAY_ERROR_TEXT = "Err";
 
    /**
+    * Id des Display-Labels für TestFX.
+    */
+   private static final String ID_DISPLAY_LABEL = "displayLabel";
+
+   /**
+    * Id des Status-Labels für TestFX.
+    */
+   private static final String ID_STATUS_LABEL = "statusLabel";
+
+   /**
+    * Präfix für die Ids der Ziffernbuttons.
+    */
+   private static final String ID_BUTTON_PREFIX = "button";
+
+   /**
+    * Id des Dezimalpunkt-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_DECIMAL_POINT = "buttonDecimalPoint";
+
+   /**
+    * Id des Enter-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_ENTER = "buttonEnter";
+
+   /**
+    * Id des Additions-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_ADD = "buttonAdd";
+
+   /**
+    * Id des Subtraktions-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_SUBTRACT = "buttonSubtract";
+
+   /**
+    * Id des Multiplikations-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_MULTIPLY = "buttonMultiply";
+
+   /**
+    * Id des Divisions-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_DIVIDE = "buttonDivide";
+
+   /**
+    * Id des CLR-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_CLEAR = "buttonClear";
+
+   /**
+    * Id des CLX-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_CLEAR_X = "buttonClearX";
+
+   /**
+    * Id des LastX-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_LAST_X = "buttonLastX";
+
+   /**
+    * Id des X&lt;&gt;Y-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_SWAP_XY = "buttonSwapXY";
+
+   /**
+    * Id des Vorzeichenwechsel-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_CHANGE_SIGN = "buttonChangeSign";
+
+   /**
+    * Id des Kehrwert-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_RECIPROCAL = "buttonReciprocal";
+
+   /**
+    * Id des Potenz-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_POWER = "buttonPower";
+
+   /**
+    * Id des Quadratwurzel-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_SQUARE_ROOT = "buttonSquareRoot";
+
+   /**
+    * Id des Logarithmus-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_LN = "buttonLn";
+
+   /**
+    * Id des Sinus-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_SIN = "buttonSin";
+
+   /**
+    * Id des Cosinus-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_COS = "buttonCos";
+
+   /**
+    * Id des Tangens-Buttons für TestFX.
+    */
+   private static final String ID_BUTTON_TAN = "buttonTan";
+
+   /**
     * Rechenkern des UPN-Rechners.
     */
    private final UPNCore upnCore;
@@ -394,8 +502,10 @@ public class CalculatorPane extends BorderPane
     * Erzeugt die Oberfläche des UPN-Rechners.
     *
     * @param upnCore
-    *            Rechenkern, der durch die Oberfläche bedient wird; darf nicht
-    *            {@code null} sein
+    *           Rechenkern, der durch die Oberfläche bedient wird; darf nicht
+    *           {@code null} sein
+    * @throws IllegalArgumentException
+    *           wenn {@code upnCore} {@code null} ist
     */
    public CalculatorPane(UPNCore upnCore)
    {
@@ -417,13 +527,19 @@ public class CalculatorPane extends BorderPane
    }
 
    /**
-    * Erstellt das Display-Label.
+    * Erstellt das Display-Label des Rechners.
+    *
+    * <p>
+    * Die Id wird gesetzt, damit TestFX das Label in Oberflächentests eindeutig
+    * über {@code #displayLabel} finden kann.
+    * </p>
     *
     * @return Label für die Rechneranzeige
     */
    private Label createDisplayLabel()
    {
       Label label = new Label();
+      label.setId(ID_DISPLAY_LABEL);
       label.setMaxWidth(Double.MAX_VALUE);
       label.setMinHeight(DISPLAY_MIN_HEIGHT);
       label.setAlignment(Pos.CENTER_RIGHT);
@@ -432,13 +548,19 @@ public class CalculatorPane extends BorderPane
    }
 
    /**
-    * Erstellt die Statuszeile.
+    * Erstellt das Status-Label des Rechners.
+    *
+    * <p>
+    * Die Id wird gesetzt, damit TestFX das Label in Oberflächentests eindeutig
+    * über {@code #statusLabel} finden kann.
+    * </p>
     *
     * @return Label für Statusinformationen
     */
    private Label createStatusLabel()
    {
       Label label = new Label();
+      label.setId(ID_STATUS_LABEL);
       label.setMaxWidth(Double.MAX_VALUE);
       label.setMinHeight(STATUS_MIN_HEIGHT);
       label.setAlignment(Pos.CENTER_LEFT);
@@ -456,96 +578,105 @@ public class CalculatorPane extends BorderPane
       GridPane grid = new GridPane();
       grid.setHgap(GRID_GAP);
       grid.setVgap(GRID_GAP);
-      grid.setPadding(new Insets(PANE_PADDING, GRID_HORIZONTAL_PADDING,
+      grid.setPadding(new Insets(GRID_VERTICAL_PADDING, GRID_HORIZONTAL_PADDING,
             GRID_VERTICAL_PADDING, GRID_HORIZONTAL_PADDING));
 
-      addButton(grid, BUTTON_LN, COLUMN_ZERO, ROW_ZERO,
+      addButton(grid, BUTTON_LN, ID_BUTTON_LN, COLUMN_ZERO, ROW_ZERO,
             new OperatorButtonEventHandler(new LnOperator()));
-      addButton(grid, BUTTON_SIN, COLUMN_ONE, ROW_ZERO,
+      addButton(grid, BUTTON_SIN, ID_BUTTON_SIN, COLUMN_ONE, ROW_ZERO,
             new OperatorButtonEventHandler(new SinOperator()));
-      addButton(grid, BUTTON_COS, COLUMN_TWO, ROW_ZERO,
+      addButton(grid, BUTTON_COS, ID_BUTTON_COS, COLUMN_TWO, ROW_ZERO,
             new OperatorButtonEventHandler(new CosOperator()));
-      addButton(grid, BUTTON_TAN, COLUMN_THREE, ROW_ZERO,
+      addButton(grid, BUTTON_TAN, ID_BUTTON_TAN, COLUMN_THREE, ROW_ZERO,
             new OperatorButtonEventHandler(new TanOperator()));
 
-      addButton(grid, BUTTON_CHANGE_SIGN, COLUMN_ZERO, ROW_ONE,
-            new ChangeSignButtonEventHandler());
-      addButton(grid, BUTTON_RECIPROCAL, COLUMN_ONE, ROW_ONE,
-            new OperatorButtonEventHandler(new ReciprocalOperator()));
-      addButton(grid, BUTTON_POWER, COLUMN_TWO, ROW_ONE,
+      addButton(grid, BUTTON_CHANGE_SIGN, ID_BUTTON_CHANGE_SIGN, COLUMN_ZERO,
+            ROW_ONE, new ChangeSignButtonEventHandler());
+      addButton(grid, BUTTON_RECIPROCAL, ID_BUTTON_RECIPROCAL, COLUMN_ONE,
+            ROW_ONE, new OperatorButtonEventHandler(new ReciprocalOperator()));
+      addButton(grid, BUTTON_POWER, ID_BUTTON_POWER, COLUMN_TWO, ROW_ONE,
             new OperatorButtonEventHandler(new PowerOperator()));
-      addButton(grid, BUTTON_SQUARE_ROOT, COLUMN_THREE, ROW_ONE,
-            new OperatorButtonEventHandler(new SquareRootOperator()));
+      addButton(grid, BUTTON_SQUARE_ROOT, ID_BUTTON_SQUARE_ROOT, COLUMN_THREE,
+            ROW_ONE, new OperatorButtonEventHandler(new SquareRootOperator()));
 
-      addButton(grid, BUTTON_LAST_X, COLUMN_ZERO, ROW_TWO,
+      addButton(grid, BUTTON_LAST_X, ID_BUTTON_LAST_X, COLUMN_ZERO, ROW_TWO,
             new PushLastXButtonEventHandler());
-      addButton(grid, BUTTON_SWAP_XY, COLUMN_ONE, ROW_TWO,
+      addButton(grid, BUTTON_SWAP_XY, ID_BUTTON_SWAP_XY, COLUMN_ONE, ROW_TWO,
             new SwapXYButtonEventHandler());
-      addButton(grid, BUTTON_CLEAR, COLUMN_TWO, ROW_TWO,
+      addButton(grid, BUTTON_CLEAR, ID_BUTTON_CLEAR, COLUMN_TWO, ROW_TWO,
             new ClearButtonEventHandler());
-      addButton(grid, BUTTON_CLEAR_X, COLUMN_THREE, ROW_TWO,
+      addButton(grid, BUTTON_CLEAR_X, ID_BUTTON_CLEAR_X, COLUMN_THREE, ROW_TWO,
             new ClearXButtonEventHandler());
 
-      addButton(grid, DIGIT_SEVEN, COLUMN_ZERO, ROW_THREE,
-            new DigitButtonEventHandler(VALUE_SEVEN));
-      addButton(grid, DIGIT_EIGHT, COLUMN_ONE, ROW_THREE,
-            new DigitButtonEventHandler(VALUE_EIGHT));
-      addButton(grid, DIGIT_NINE, COLUMN_TWO, ROW_THREE,
-            new DigitButtonEventHandler(VALUE_NINE));
-      addButton(grid, BUTTON_DIVIDE, COLUMN_THREE, ROW_THREE,
+      addButton(grid, DIGIT_SEVEN, ID_BUTTON_PREFIX + DIGIT_SEVEN, COLUMN_ZERO,
+            ROW_THREE, new DigitButtonEventHandler(VALUE_SEVEN));
+      addButton(grid, DIGIT_EIGHT, ID_BUTTON_PREFIX + DIGIT_EIGHT, COLUMN_ONE,
+            ROW_THREE, new DigitButtonEventHandler(VALUE_EIGHT));
+      addButton(grid, DIGIT_NINE, ID_BUTTON_PREFIX + DIGIT_NINE, COLUMN_TWO,
+            ROW_THREE, new DigitButtonEventHandler(VALUE_NINE));
+      addButton(grid, BUTTON_DIVIDE, ID_BUTTON_DIVIDE, COLUMN_THREE, ROW_THREE,
             new OperatorButtonEventHandler(new DivOperator()));
 
-      addButton(grid, DIGIT_FOUR, COLUMN_ZERO, ROW_FOUR,
-            new DigitButtonEventHandler(VALUE_FOUR));
-      addButton(grid, DIGIT_FIVE, COLUMN_ONE, ROW_FOUR,
-            new DigitButtonEventHandler(VALUE_FIVE));
-      addButton(grid, DIGIT_SIX, COLUMN_TWO, ROW_FOUR,
-            new DigitButtonEventHandler(VALUE_SIX));
-      addButton(grid, BUTTON_MULTIPLY, COLUMN_THREE, ROW_FOUR,
-            new OperatorButtonEventHandler(new MulOperator()));
+      addButton(grid, DIGIT_FOUR, ID_BUTTON_PREFIX + DIGIT_FOUR, COLUMN_ZERO,
+            ROW_FOUR, new DigitButtonEventHandler(VALUE_FOUR));
+      addButton(grid, DIGIT_FIVE, ID_BUTTON_PREFIX + DIGIT_FIVE, COLUMN_ONE,
+            ROW_FOUR, new DigitButtonEventHandler(VALUE_FIVE));
+      addButton(grid, DIGIT_SIX, ID_BUTTON_PREFIX + DIGIT_SIX, COLUMN_TWO,
+            ROW_FOUR, new DigitButtonEventHandler(VALUE_SIX));
+      addButton(grid, BUTTON_MULTIPLY, ID_BUTTON_MULTIPLY, COLUMN_THREE,
+            ROW_FOUR, new OperatorButtonEventHandler(new MulOperator()));
 
-      addButton(grid, DIGIT_ONE, COLUMN_ZERO, ROW_FIVE,
-            new DigitButtonEventHandler(VALUE_ONE));
-      addButton(grid, DIGIT_TWO, COLUMN_ONE, ROW_FIVE,
-            new DigitButtonEventHandler(VALUE_TWO));
-      addButton(grid, DIGIT_THREE, COLUMN_TWO, ROW_FIVE,
-            new DigitButtonEventHandler(VALUE_THREE));
-      addButton(grid, BUTTON_SUBTRACT, COLUMN_THREE, ROW_FIVE,
-            new OperatorButtonEventHandler(new SubOperator()));
+      addButton(grid, DIGIT_ONE, ID_BUTTON_PREFIX + DIGIT_ONE, COLUMN_ZERO,
+            ROW_FIVE, new DigitButtonEventHandler(VALUE_ONE));
+      addButton(grid, DIGIT_TWO, ID_BUTTON_PREFIX + DIGIT_TWO, COLUMN_ONE,
+            ROW_FIVE, new DigitButtonEventHandler(VALUE_TWO));
+      addButton(grid, DIGIT_THREE, ID_BUTTON_PREFIX + DIGIT_THREE, COLUMN_TWO,
+            ROW_FIVE, new DigitButtonEventHandler(VALUE_THREE));
+      addButton(grid, BUTTON_SUBTRACT, ID_BUTTON_SUBTRACT, COLUMN_THREE,
+            ROW_FIVE, new OperatorButtonEventHandler(new SubOperator()));
 
-      addButton(grid, DIGIT_ZERO, COLUMN_ZERO, ROW_SIX,
-            new DigitButtonEventHandler(VALUE_ZERO));
-      addButton(grid, BUTTON_DECIMAL_POINT, COLUMN_ONE, ROW_SIX,
-            new DecimalPointButtonEventHandler());
-      addButton(grid, BUTTON_ENTER, COLUMN_TWO, ROW_SIX,
+      addButton(grid, DIGIT_ZERO, ID_BUTTON_PREFIX + DIGIT_ZERO, COLUMN_ZERO,
+            ROW_SIX, new DigitButtonEventHandler(VALUE_ZERO));
+      addButton(grid, BUTTON_DECIMAL_POINT, ID_BUTTON_DECIMAL_POINT, COLUMN_ONE,
+            ROW_SIX, new DecimalPointButtonEventHandler());
+      addButton(grid, BUTTON_ENTER, ID_BUTTON_ENTER, COLUMN_TWO, ROW_SIX,
             new EnterButtonEventHandler());
-      addButton(grid, BUTTON_ADD, COLUMN_THREE, ROW_SIX,
+      addButton(grid, BUTTON_ADD, ID_BUTTON_ADD, COLUMN_THREE, ROW_SIX,
             new OperatorButtonEventHandler(new AddOperator()));
 
       return grid;
    }
 
    /**
-    * Fügt einen Button in das Grid ein.
+    * Fügt einen Button in das Tastaturraster ein.
+    *
+    * <p>
+    * Jeder Button erhält eine eindeutige Id. Diese Ids werden von TestFX
+    * verwendet, um Buttons in Oberflächentests unabhängig von ihrer sichtbaren
+    * Beschriftung anzusprechen.
+    * </p>
     *
     * @param grid
-    *            GridPane, in das der Button eingefügt wird
+    *           GridPane, in das der Button eingefügt wird
     * @param text
-    *            Buttonbeschriftung
+    *           sichtbare Beschriftung des Buttons
+    * @param id
+    *           eindeutige JavaFX-Id des Buttons für TestFX
     * @param column
-    *            Spalte im Grid
+    *           Spalte im GridPane
     * @param row
-    *            Zeile im Grid
-    * @param eventHandler
-    *            EventHandler des Buttons
+    *           Zeile im GridPane
+    * @param action
+    *           Aktion, die beim Klick auf den Button ausgeführt wird
     */
-   private void addButton(GridPane grid, String text, int column, int row,
-         EventHandler<ActionEvent> eventHandler)
+   private void addButton(GridPane grid, String text, String id, int column,
+         int row, EventHandler<ActionEvent> action)
    {
       Button button = new Button(text);
+      button.setId(id);
       button.setMaxWidth(Double.MAX_VALUE);
       button.setMinSize(BUTTON_MIN_WIDTH, BUTTON_MIN_HEIGHT);
-      button.setOnAction(eventHandler);
+      button.setOnAction(action);
 
       grid.add(button, column, row);
    }
@@ -575,7 +706,7 @@ public class CalculatorPane extends BorderPane
     * Aktualisiert die View nach einem Anwenderfehler.
     *
     * @param ex
-    *            aufgetretener Anwenderfehler
+    *           aufgetretener Anwenderfehler
     */
    private void updateViewWithUserError(UserException ex)
    {
@@ -588,7 +719,7 @@ public class CalculatorPane extends BorderPane
     * Zeigt einen unerwarteten Programmfehler in der Statuszeile an.
     *
     * @param ex
-    *            unerwarteter Fehler
+    *           unerwarteter Fehler
     */
    private void showUnexpectedError(RuntimeException ex)
    {
@@ -599,6 +730,12 @@ public class CalculatorPane extends BorderPane
 
    /**
     * Gemeinsame Basisklasse für sichere Button-EventHandler.
+    *
+    * <p>
+    * Die Unterklassen führen nur die konkrete Aktion aus. Fehlerbehandlung und
+    * Aktualisierung der Oberfläche werden zentral in dieser Klasse erledigt.
+    * Dadurch bleibt die Behandlung aller Buttons einheitlich.
+    * </p>
     */
    private abstract class AbstractSafeButtonEventHandler
          implements EventHandler<ActionEvent>
@@ -622,16 +759,16 @@ public class CalculatorPane extends BorderPane
       }
 
       /**
-       * Führt die eigentliche Aktion aus.
+       * Führt die eigentliche Buttonaktion aus.
        *
        * @throws UserException
-       *            falls ein Anwenderfehler auftritt
+       *            wenn beim Rechenkern ein Anwenderfehler entsteht
        */
       protected abstract void execute() throws UserException;
    }
 
    /**
-    * EventHandler für Ziffern.
+    * EventHandler für Ziffernbuttons.
     */
    private class DigitButtonEventHandler extends AbstractSafeButtonEventHandler
    {
@@ -641,12 +778,12 @@ public class CalculatorPane extends BorderPane
       private final int digit;
 
       /**
-       * Erzeugt den EventHandler.
+       * Erzeugt einen EventHandler für eine Ziffer.
        *
        * @param digit
-       *            zu verarbeitende Ziffer
+       *            Ziffer, die an den Rechenkern übergeben wird
        */
-      public DigitButtonEventHandler(int digit)
+      DigitButtonEventHandler(int digit)
       {
          this.digit = digit;
       }
@@ -711,7 +848,8 @@ public class CalculatorPane extends BorderPane
    /**
     * EventHandler für CLX.
     */
-   private class ClearXButtonEventHandler extends AbstractSafeButtonEventHandler
+   private class ClearXButtonEventHandler
+         extends AbstractSafeButtonEventHandler
    {
       @Override
       protected void execute() throws UserException
@@ -746,10 +884,9 @@ public class CalculatorPane extends BorderPane
    }
 
    /**
-    * EventHandler für Operatoren.
+    * EventHandler für mathematische Operatoren.
     */
-   private class OperatorButtonEventHandler
-         extends AbstractSafeButtonEventHandler
+   private class OperatorButtonEventHandler extends AbstractSafeButtonEventHandler
    {
       /**
        * Auszuführender Operator.
@@ -757,12 +894,12 @@ public class CalculatorPane extends BorderPane
       private final Operator operator;
 
       /**
-       * Erzeugt den EventHandler.
+       * Erzeugt einen EventHandler für einen mathematischen Operator.
        *
        * @param operator
-       *            auszuführender Operator
+       *            Operator, der beim Buttonklick ausgeführt wird
        */
-      public OperatorButtonEventHandler(Operator operator)
+      OperatorButtonEventHandler(Operator operator)
       {
          this.operator = operator;
       }
